@@ -83,7 +83,7 @@ export default function Preloader({ onComplete }: PreloaderProps) {
       {/* Background Curtain Panel */}
       <div
         ref={panelRef}
-        className="relative flex h-full w-full flex-col items-center justify-center bg-[#0B0A0F]"
+        className="relative flex h-full w-full flex-col items-center justify-center bg-[#F6F3EF]"
       >
         {/* Central Logo Mark with Liquid ClipPath */}
         <div data-loader-mark="true" className="relative flex flex-col items-center">
@@ -103,8 +103,8 @@ export default function Preloader({ onComplete }: PreloaderProps) {
               </clipPath>
             </defs>
 
-            {/* Ghost Silhouette Base (18% Opacity) */}
-            <g fill="#F6F3EF" opacity="0.18">
+            {/* Ghost Silhouette Base */}
+            <g fill="#E2DDD5" opacity="0.6">
               <path d="M27.9271 35.2244L28.9161 42.818L18.486 35.4071L7.90283 42.9264L8.88835 35.3355L18.4858 28.5164L27.9271 35.2244Z" />
               <path d="M15.4903 23.3423L0 34.2789L1.75369 20.6774L7.34806 16.7187L6.74483 23.1164L10.9979 20.1124L13.1327 3.79814L18.5 0L15.4903 23.3423Z" />
               <path d="M23.8673 3.79814L26.0021 20.1124L30.2552 23.1164L29.6519 16.7187L35.2463 20.6774L37 34.2789L21.5097 23.3423L18.5 0L23.8673 3.79814Z" />
@@ -117,7 +117,7 @@ export default function Preloader({ onComplete }: PreloaderProps) {
               y="43"
               width="37"
               height="0"
-              fill="#D4FF00"
+              fill="#171220"
               clipPath="url(#liga1-loader-clip)"
             />
           </svg>
@@ -130,8 +130,8 @@ export default function Preloader({ onComplete }: PreloaderProps) {
             style={{
               letterSpacing: "0.2em",
               paddingLeft: "0.2em",
-              color: "#F6F3EF",
-              opacity: 0.5,
+              color: "#171220",
+              opacity: 0.7,
             }}
           >
             {progress}%
@@ -140,7 +140,7 @@ export default function Preloader({ onComplete }: PreloaderProps) {
 
         {/* Subtle Brand Tagline at Bottom */}
         <div className="absolute bottom-10 left-1/2 -translate-x-1/2 text-center">
-          <p className="text-[10px] font-mono uppercase tracking-[0.25em] text-[#8E8E9A]">
+          <p className="text-[10px] font-mono uppercase tracking-[0.25em] text-[#6E6D7A]">
             BRI SUPER LEAGUE 2026/27 · ON-FIELD
           </p>
         </div>

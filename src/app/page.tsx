@@ -10,7 +10,10 @@ import FooterPortal from "@/components/FooterPortal";
 
 export default function Home() {
   return (
-    <main className="relative min-h-screen bg-[#0A0A0C] text-[#F4F4F6] overflow-x-hidden">
+    <main
+      data-theme="tone-light"
+      className="relative min-h-screen bg-[#F6F3EF] text-[#171220] overflow-x-hidden selection:bg-[#D4FF00] selection:text-[#171220]"
+    >
       {/* 0-100% Split Curtain Preloader */}
       <Preloader />
 
