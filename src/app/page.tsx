@@ -1,6 +1,8 @@
 import Navbar from "@/components/Navbar";
 import Preloader from "@/components/Preloader";
 import HeroOnField from "@/components/HeroOnField";
+import SeasonTimeline from "@/components/SeasonTimeline";
+import StandingsAndSchedule from "@/components/StandingsAndSchedule";
 
 export default function Home() {
   return (
@@ -11,8 +13,14 @@ export default function Home() {
       {/* Floating Glassmorphism Navbar */}
       <Navbar />
 
-      {/* Hero Section */}
+      {/* 1. Hero Section ("ON-FIELD") */}
       <HeroOnField />
+
+      {/* 2. Interactive Season Timeline (2021-2027) */}
+      <SeasonTimeline />
+
+      {/* 3. Klasemen 18 Klub & Jadwal Pekan 7 */}
+      <StandingsAndSchedule />
     </main>
   );
 }
