@@ -145,16 +145,16 @@ export default function RecordBooksGrid() {
                 {/* Middle & Bottom: Headline, Athlete Name, Narrative */}
                 <div className="pt-6 border-t border-[#23232C]/60 flex flex-col gap-2">
                   <h3 className="text-lg font-bold font-anton uppercase text-[#F6F3EF] leading-tight group-hover:text-[#D4FF00] transition-colors">
-                    {stat.name}
+                    {stat.playerName}
                   </h3>
 
                   <div className="flex items-center justify-between text-xs font-mono text-[#8E8E9A]">
-                    <span className="text-[#F6F3EF] font-medium">{stat.club}</span>
-                    <span>{stat.detail}</span>
+                    <span className="text-[#F6F3EF] font-medium">{stat.clubName}</span>
+                    <span>{stat.position}</span>
                   </div>
 
                   <p className="text-xs text-[#8E8E9A] font-sans leading-relaxed mt-2 line-clamp-3">
-                    {stat.highlight}
+                    {stat.detail}
                   </p>
                 </div>
               </motion.div>

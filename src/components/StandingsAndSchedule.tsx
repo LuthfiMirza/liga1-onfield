@@ -151,12 +151,12 @@ export default function StandingsAndSchedule() {
                   </thead>
                   <tbody className="divide-y divide-[#23232C]/60 text-xs font-mono">
                     {filteredStandings.map((row) => {
-                      const isChampionship = row.position <= 4;
-                      const isRelegation = row.position >= 16;
+                      const isChampionship = row.rank <= 4;
+                      const isRelegation = row.rank >= 16;
 
                       return (
                         <tr
-                          key={row.position}
+                          key={row.rank}
                           className="hover:bg-[#1C1C24]/80 transition-colors duration-150 group"
                         >
                           {/* Position with Status Badge */}
@@ -170,7 +170,7 @@ export default function StandingsAndSchedule() {
                                   : "text-[#8E8E9A]"
                               }`}
                             >
-                              {row.position}
+                              {row.rank}
                             </span>
                           </td>
 
@@ -181,7 +181,7 @@ export default function StandingsAndSchedule() {
                                 {row.clubName}
                               </span>
                               <span className="text-[10px] text-[#8E8E9A] uppercase tracking-wider">
-                                {row.stadium}
+                                {row.code} • BRI SUPER LEAGUE
                               </span>
                             </div>
                           </td>
