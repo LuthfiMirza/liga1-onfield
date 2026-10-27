@@ -28,30 +28,30 @@ export default function RecordBooksGrid() {
     <section
       id="record-books"
       data-section="on-records"
-      data-tone="dark"
-      className="relative mx-auto max-w-[1728px] px-6 py-20 md:px-14 md:py-28 bg-[#0B0A0F] border-t border-[#23232C]/80"
+      data-tone="light"
+      className="relative mx-auto max-w-[1728px] px-6 py-20 md:px-14 md:py-28 bg-[#F6F3EF] border-t border-[#E2DDD5]"
       aria-label="Liga 1 Record Books"
     >
       {/* Background ambient lighting */}
-      <div className="absolute top-1/4 right-0 w-96 h-96 bg-[#D4FF00]/5 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute top-1/4 right-0 w-96 h-96 bg-[#00529C]/5 rounded-full blur-[140px] pointer-events-none" />
 
       {/* Section Header ala jjettas on-records */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
         <div>
           <div className="flex items-center gap-2 mb-3">
-            <span className="w-2 h-2 rounded-full bg-[#D4FF00]" />
-            <span className="text-xs font-mono tracking-widest text-[#D4FF00] uppercase">
+            <span className="w-2 h-2 rounded-full bg-[#00529C]" />
+            <span className="text-xs font-mono tracking-widest text-[#00529C] uppercase font-bold">
               REWRITING THE RECORD BOOKS
             </span>
           </div>
           <h2
-            className="font-anton uppercase tracking-tight text-[#F6F3EF] leading-none"
+            className="font-anton uppercase tracking-tight text-[#171220] leading-none"
             style={{ fontSize: "clamp(48px, 6vw, 92px)" }}
           >
             CATATAN REKOR
           </h2>
         </div>
-        <p className="max-w-md text-xs sm:text-sm text-[#8E8E9A] font-sans leading-relaxed">
+        <p className="max-w-md text-xs sm:text-sm text-[#6E6D7A] font-sans leading-relaxed">
           Pencapaian bersejarah dari mesin gol tajam, playmaker visioner, penjaga gawang tangguh, hingga stadion tergemuruh di tanah air.
         </p>
       </div>
@@ -68,11 +68,11 @@ export default function RecordBooksGrid() {
               onClick={() => setActiveCategory(cat.id as FilterCategory)}
               className={`relative px-5 py-2.5 rounded-full text-xs font-mono uppercase tracking-wider whitespace-nowrap transition-all duration-300 flex items-center gap-2 border ${
                 isActive
-                  ? "bg-[#D4FF00] text-[#0A0A0C] border-[#D4FF00] font-bold shadow-[0_0_20px_rgba(212,255,0,0.3)] scale-105"
-                  : "bg-[#131318] text-[#8E8E9A] border-[#23232C] hover:border-[#D4FF00]/40 hover:text-[#F6F3EF]"
+                  ? "bg-[#171220] text-[#D4FF00] border-[#171220] font-bold shadow-md scale-105"
+                  : "bg-[#FFFFFF] text-[#6E6D7A] border-[#E2DDD5] hover:border-[#171220] hover:text-[#171220]"
               }`}
             >
-              <Icon className={`w-3.5 h-3.5 ${isActive ? "text-[#0A0A0C]" : "text-[#D4FF00]"}`} />
+              <Icon className={`w-3.5 h-3.5 ${isActive ? "text-[#D4FF00]" : "text-[#00529C]"}`} />
               <span>{cat.label}</span>
             </button>
           );
@@ -100,16 +100,16 @@ export default function RecordBooksGrid() {
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.94, y: -15 }}
                 transition={{ duration: 0.3, ease: "easeOut" }}
-                className={`flex flex-col justify-between p-6 sm:p-7 rounded-2xl bg-[#131318]/90 border backdrop-blur-xl relative overflow-hidden transition-all duration-300 group hover:border-[#D4FF00] min-h-[420px] ${
+                className={`flex flex-col justify-between p-6 sm:p-7 rounded-2xl bg-[#FFFFFF] border shadow-sm relative overflow-hidden transition-all duration-300 group hover:border-[#171220] hover:shadow-xl min-h-[420px] ${
                   isRankOne
-                    ? "border-[#D4FF00]/40 shadow-[0_12px_35px_-10px_rgba(212,255,0,0.18)]"
-                    : "border-[#23232C]"
+                    ? "border-[#171220] shadow-[0_12px_35px_-10px_rgba(0,0,0,0.08)]"
+                    : "border-[#E2DDD5]"
                 }`}
               >
                 {/* Accent Top Border */}
                 <div
-                  className="absolute top-0 left-0 right-0 h-1"
-                  style={{ backgroundColor: stat.clubColor || "#D4FF00" }}
+                  className="absolute top-0 left-0 right-0 h-1.5"
+                  style={{ backgroundColor: stat.clubColor || "#00529C" }}
                 />
 
                 {/* Top Badge: Rank & Category */}
@@ -118,42 +118,42 @@ export default function RecordBooksGrid() {
                     <span
                       className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase ${
                         isRankOne
-                          ? "bg-[#D4FF00] text-[#0A0A0C]"
-                          : "bg-[#0A0A0C] text-[#8E8E9A] border border-[#23232C]"
+                          ? "bg-[#171220] text-[#D4FF00]"
+                          : "bg-[#FAF8F5] text-[#6E6D7A] border border-[#E2DDD5]"
                       }`}
                     >
-                      {isRankOne && <Award className="w-3 h-3" />}
+                      {isRankOne && <Award className="w-3 h-3 text-[#D4FF00]" />}
                       <span>RANK #{stat.rank}</span>
                     </span>
 
-                    <span className="text-[10px] font-mono tracking-widest uppercase text-[#8E8E9A]">
+                    <span className="text-[10px] font-mono tracking-widest uppercase text-[#6E6D7A]">
                       {stat.category === "attendance" ? "STADION" : stat.category.toUpperCase()}
                     </span>
                   </div>
 
                   {/* Massive Hero Number at the Peak of Card ala jjettas */}
                   <div className="mt-8 mb-2">
-                    <div className="font-anton uppercase tracking-tight text-[#F6F3EF] leading-[0.82] tabular-nums text-7xl sm:text-8xl group-hover:text-[#D4FF00] transition-colors">
+                    <div className="font-anton uppercase tracking-tight text-[#171220] leading-[0.82] tabular-nums text-7xl sm:text-8xl group-hover:text-[#00529C] transition-colors">
                       {formattedValue}
                     </div>
-                    <p className="text-[11px] font-mono uppercase tracking-[0.2em] text-[#D4FF00] mt-2 font-bold">
+                    <p className="text-[11px] font-mono uppercase tracking-[0.2em] text-[#00529C] mt-2 font-bold">
                       {stat.unit}
                     </p>
                   </div>
                 </div>
 
                 {/* Middle & Bottom: Headline, Athlete Name, Narrative */}
-                <div className="pt-6 border-t border-[#23232C]/60 flex flex-col gap-2">
-                  <h3 className="text-lg font-bold font-anton uppercase text-[#F6F3EF] leading-tight group-hover:text-[#D4FF00] transition-colors">
+                <div className="pt-6 border-t border-[#E2DDD5] flex flex-col gap-2">
+                  <h3 className="text-lg font-bold font-anton uppercase text-[#171220] leading-tight group-hover:text-[#00529C] transition-colors">
                     {stat.playerName}
                   </h3>
 
-                  <div className="flex items-center justify-between text-xs font-mono text-[#8E8E9A]">
-                    <span className="text-[#F6F3EF] font-medium">{stat.clubName}</span>
+                  <div className="flex items-center justify-between text-xs font-mono text-[#6E6D7A]">
+                    <span className="text-[#171220] font-semibold">{stat.clubName}</span>
                     <span>{stat.position}</span>
                   </div>
 
-                  <p className="text-xs text-[#8E8E9A] font-sans leading-relaxed mt-2 line-clamp-3">
+                  <p className="text-xs text-[#6E6D7A] font-sans leading-relaxed mt-2 line-clamp-3">
                     {stat.detail}
                   </p>
                 </div>

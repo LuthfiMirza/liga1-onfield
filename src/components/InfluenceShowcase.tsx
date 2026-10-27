@@ -105,13 +105,14 @@ export default function InfluenceShowcase() {
     <section
       id="atmosphere"
       ref={sectionRef}
-      className="relative min-h-screen py-24 border-t border-[#23232C] bg-[#0A0A0C] overflow-hidden flex flex-col justify-between"
+      data-tone="light"
+      className="relative min-h-screen py-24 border-t border-[#E2DDD5] bg-[#F6F3EF] overflow-hidden flex flex-col justify-between"
     >
       {/* Background Kinetic Marquee */}
-      <div className="absolute top-12 left-0 w-full overflow-hidden pointer-events-none select-none opacity-[0.06] z-0">
+      <div className="absolute top-12 left-0 w-full overflow-hidden pointer-events-none select-none opacity-[0.05] z-0">
         <div
           ref={marqueeRef}
-          className="flex whitespace-nowrap text-8xl sm:text-[12rem] md:text-[16rem] font-bold font-anton tracking-tighter uppercase text-[#F4F4F6]"
+          className="flex whitespace-nowrap text-8xl sm:text-[12rem] md:text-[16rem] font-bold font-anton tracking-tighter uppercase text-[#171220]"
         >
           <span>ATMOSFER TRIBUN • DETAK NADI KULTUR BOLA • SUPORTER NUSANTARA • </span>
           <span>ATMOSFER TRIBUN • DETAK NADI KULTUR BOLA • SUPORTER NUSANTARA • </span>
@@ -121,17 +122,17 @@ export default function InfluenceShowcase() {
       {/* Header Info */}
       <div className="relative z-10 px-4 sm:px-8 mx-auto max-w-7xl w-full mb-8">
         <div className="flex items-center gap-2 mb-2">
-          <Volume2 className="w-4 h-4 text-[#D4FF00] animate-pulse" />
-          <span className="text-xs font-mono tracking-widest text-[#D4FF00] uppercase">
+          <Volume2 className="w-4 h-4 text-[#00529C] animate-pulse" />
+          <span className="text-xs font-mono tracking-widest text-[#00529C] uppercase font-bold">
             ATMOSFER STADION & MEDIA // LIPUTAN BERITA & GALERI
           </span>
         </div>
 
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-          <h2 className="text-4xl sm:text-6xl md:text-7xl font-bold uppercase tracking-tight font-anton text-[#F4F4F6] leading-[0.88]">
+          <h2 className="text-4xl sm:text-6xl md:text-7xl font-bold uppercase tracking-tight font-anton text-[#171220] leading-[0.88]">
             DI LUAR 90 MENIT
           </h2>
-          <p className="max-w-md text-xs sm:text-sm text-[#8E8E9A] font-sans">
+          <p className="max-w-md text-xs sm:text-sm text-[#6E6D7A] font-sans">
             Gairah tak terbendung dari tribun stadion termegah Indonesia. Simak berita taktik terkini, galeri visual koreografi, dan cuplikan video aksi heroik pemain.
           </p>
         </div>
@@ -147,42 +148,42 @@ export default function InfluenceShowcase() {
           {NEWS_EDITORIAL_DATA.map((item: NewsItem) => (
             <article
               key={item.id}
-              className="flex-shrink-0 w-[85vw] sm:w-[420px] lg:w-[460px] p-6 sm:p-8 rounded-3xl bg-[#131318]/95 border border-[#23232C] hover:border-[#D4FF00]/60 backdrop-blur-2xl transition-all duration-300 flex flex-col justify-between group relative overflow-hidden"
+              className="flex-shrink-0 w-[85vw] sm:w-[420px] lg:w-[460px] p-6 sm:p-8 rounded-3xl bg-[#FFFFFF] border border-[#E2DDD5] hover:border-[#171220] shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group relative overflow-hidden"
             >
               {/* Colored Accent Top Glow */}
               <div
-                className="absolute top-0 left-0 right-0 h-1.5 opacity-80"
+                className="absolute top-0 left-0 right-0 h-1.5 opacity-90"
                 style={{ backgroundColor: item.accentColor }}
               />
 
               <div>
                 {/* Meta category & date */}
-                <div className="flex items-center justify-between text-xs font-mono text-[#8E8E9A] mb-4">
-                  <span className="px-2.5 py-1 rounded-full bg-[#0A0A0C] border border-[#23232C] text-[#D4FF00] text-[10px] font-bold uppercase tracking-wider">
+                <div className="flex items-center justify-between text-xs font-mono text-[#6E6D7A] mb-4">
+                  <span className="px-2.5 py-1 rounded-full bg-[#FAF8F5] border border-[#E2DDD5] text-[#00529C] text-[10px] font-bold uppercase tracking-wider">
                     {item.category}
                   </span>
                   <span>{item.date}</span>
                 </div>
 
                 {/* Article Headline */}
-                <h3 className="text-xl sm:text-2xl font-bold font-anton tracking-tight text-[#F4F4F6] uppercase leading-snug group-hover:text-[#D4FF00] transition-colors my-3">
+                <h3 className="text-xl sm:text-2xl font-bold font-anton tracking-tight text-[#171220] uppercase leading-snug group-hover:text-[#00529C] transition-colors my-3">
                   {item.title}
                 </h3>
 
                 {/* Excerpt */}
-                <p className="text-xs sm:text-sm text-[#8E8E9A] font-sans leading-relaxed mt-2 line-clamp-3">
+                <p className="text-xs sm:text-sm text-[#6E6D7A] font-sans leading-relaxed mt-2 line-clamp-3">
                   {item.excerpt}
                 </p>
               </div>
 
               {/* Bottom Venue & Read CTA */}
-              <div className="pt-6 mt-6 border-t border-[#23232C] flex items-center justify-between">
-                <div className="flex items-center gap-1.5 text-xs font-mono text-[#8E8E9A] truncate max-w-[65%]">
-                  <MapPin className="w-3.5 h-3.5 text-[#D4FF00] flex-shrink-0" />
+              <div className="pt-6 mt-6 border-t border-[#E2DDD5] flex items-center justify-between">
+                <div className="flex items-center gap-1.5 text-xs font-mono text-[#6E6D7A] truncate max-w-[65%]">
+                  <MapPin className="w-3.5 h-3.5 text-[#00529C] flex-shrink-0" />
                   <span className="truncate">{item.venue}</span>
                 </div>
 
-                <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-[#F4F4F6] group-hover:text-[#D4FF00] transition-colors">
+                <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-[#171220] group-hover:text-[#00529C] transition-colors">
                   <span>BACA</span>
                   <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                 </div>
@@ -194,27 +195,27 @@ export default function InfluenceShowcase() {
           {MEDIA_HIGHLIGHTS.map((media) => (
             <div
               key={media.id}
-              className="flex-shrink-0 w-[85vw] sm:w-[420px] lg:w-[460px] rounded-3xl bg-[#131318] border border-[#23232C] hover:border-[#D4FF00] transition-all duration-300 relative overflow-hidden flex flex-col justify-end p-6 sm:p-8 group min-h-[360px]"
+              className="flex-shrink-0 w-[85vw] sm:w-[420px] lg:w-[460px] rounded-3xl bg-[#171220] border border-[#E2DDD5] hover:border-[#171220] transition-all duration-300 relative overflow-hidden flex flex-col justify-end p-6 sm:p-8 group min-h-[360px] shadow-lg"
             >
               {/* Background Thumbnail Image */}
               <Image
                 src={media.image}
                 alt={media.title}
                 fill
-                className="object-cover object-center group-hover:scale-105 transition-transform duration-700 opacity-40 group-hover:opacity-50"
+                className="object-cover object-center group-hover:scale-105 transition-transform duration-700 opacity-60 group-hover:opacity-75"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0C] via-[#0A0A0C]/70 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#171220] via-[#171220]/60 to-transparent" />
 
               {/* Center Play Button for Video */}
               {media.type === "video" && (
-                <div className="absolute top-6 right-6 w-10 h-10 rounded-full bg-[#D4FF00] text-[#0A0A0C] flex items-center justify-center shadow-[0_0_20px_rgba(212,255,0,0.4)] group-hover:scale-110 transition-transform">
-                  <Play className="w-4 h-4 fill-[#0A0A0C] ml-0.5" />
+                <div className="absolute top-6 right-6 w-10 h-10 rounded-full bg-[#D4FF00] text-[#171220] flex items-center justify-center shadow-[0_0_20px_rgba(212,255,0,0.4)] group-hover:scale-110 transition-transform">
+                  <Play className="w-4 h-4 fill-[#171220] ml-0.5" />
                 </div>
               )}
 
               {/* Top Tag */}
               <div className="relative z-10 flex items-center gap-2 mb-auto">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#0A0A0C]/80 border border-[#23232C] text-[10px] font-mono font-bold uppercase text-[#D4FF00] backdrop-blur-md">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#171220]/80 border border-white/20 text-[10px] font-mono font-bold uppercase text-[#D4FF00] backdrop-blur-md">
                   {media.type === "video" ? (
                     <Film className="w-3 h-3" />
                   ) : (
@@ -223,7 +224,7 @@ export default function InfluenceShowcase() {
                   <span>{media.tag}</span>
                 </span>
                 {media.duration && (
-                  <span className="text-[10px] font-mono text-[#F4F4F6] bg-[#0A0A0C]/80 px-2 py-0.5 rounded border border-[#23232C]">
+                  <span className="text-[10px] font-mono text-white bg-[#171220]/80 px-2 py-0.5 rounded border border-white/20">
                     {media.duration}
                   </span>
                 )}
@@ -231,10 +232,10 @@ export default function InfluenceShowcase() {
 
               {/* Content */}
               <div className="relative z-10 pt-8">
-                <h3 className="text-xl sm:text-2xl font-bold font-anton tracking-tight text-[#F4F4F6] uppercase leading-tight group-hover:text-[#D4FF00] transition-colors mb-2">
+                <h3 className="text-xl sm:text-2xl font-bold font-anton tracking-tight text-white uppercase leading-tight group-hover:text-[#D4FF00] transition-colors mb-2">
                   {media.title}
                 </h3>
-                <div className="flex items-center gap-1.5 text-xs font-mono text-[#8E8E9A]">
+                <div className="flex items-center gap-1.5 text-xs font-mono text-[#E2DDD5]">
                   <MapPin className="w-3.5 h-3.5 text-[#D4FF00]" />
                   <span>{media.venue}</span>
                 </div>
@@ -245,9 +246,9 @@ export default function InfluenceShowcase() {
       </div>
 
       {/* Bottom Hint */}
-      <div className="relative z-10 px-4 sm:px-8 mx-auto max-w-7xl w-full flex items-center justify-between text-[11px] font-mono text-[#8E8E9A] mt-6">
+      <div className="relative z-10 px-4 sm:px-8 mx-auto max-w-7xl w-full flex items-center justify-between text-[11px] font-mono text-[#6E6D7A] mt-6">
         <span>SCROLL / GESER UNTUK MELIHAT BERITA & GALERI VIDEO</span>
-        <span className="text-[#D4FF00] font-bold">8 KONTEN MULTIMEDIA</span>
+        <span className="text-[#00529C] font-bold">8 KONTEN MULTIMEDIA</span>
       </div>
     </section>
   );
