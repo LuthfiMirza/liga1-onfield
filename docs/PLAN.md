@@ -20,7 +20,7 @@
   - [x] Buat komponen `RecordBooksGrid` dengan tab filter interaktif (`Semua`, `Top Scorer`, `Top Assist`, `Top Saves`, `Top Passes`, `Rekor Penonton`).
   - [x] Terapkan desain kartu tipografi besar ala `jjettas.com/on-field`.
 
-- [ ] **Fase 5: Pinned Editorial Showcase, Partner Marquee & Footer Portal**
-  - Buat komponen `InfluenceShowcase` (Pinned scroll + kinetic text marquee + kartu berita & galeri pertandingan).
-  - Buat komponen `PartnerTicker` (Infinite marquee 18 klub & sponsor resmi BRI, Indosiar, Vidio, Adidas, dll.).
-  - Buat komponen `FooterPortal` (transisi menuju halaman Off-Field/Media).
+- [x] **Fase 5: Pinned Editorial Showcase, Partner Marquee & Footer Portal**
+  - [x] Buat komponen `InfluenceShowcase` (Pinned scroll + kinetic text marquee + kartu berita & galeri pertandingan).
+  - [x] Buat komponen `PartnerTicker` (Infinite marquee 18 klub & sponsor resmi BRI, Indosiar, Vidio, Adidas, dll.).
+  - [x] Buat komponen `FooterPortal` (transisi menuju halaman Off-Field/Media).
