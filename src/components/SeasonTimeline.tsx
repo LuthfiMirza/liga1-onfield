@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import Image from "next/image";
 import gsap from "gsap";
-import { ATTENDANCE_TIMELINE, SeasonAttendanceRecord } from "@/data/liga1Data";
-import { Calendar, TrendingUp, MapPin, Users, Award } from "lucide-react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ATTENDANCE_TIMELINE, GLOBAL_KPI_STATS, SeasonAttendanceRecord } from "@/data/liga1Data";
 
 export default function SeasonTimeline() {
   const [selectedSeasonIndex, setSelectedSeasonIndex] = useState(
@@ -12,189 +13,321 @@ export default function SeasonTimeline() {
   const currentRecord: SeasonAttendanceRecord =
     ATTENDANCE_TIMELINE[selectedSeasonIndex];
 
-  const counterRef = useRef<HTMLSpanElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const statsSectionRef = useRef<HTMLDivElement>(null);
+  const statsPaneRef = useRef<HTMLDivElement>(null);
+  const leftCutoutRef = useRef<HTMLDivElement>(null);
+  const rightCutoutRef = useRef<HTMLDivElement>(null);
+  const statsParkRef = useRef<HTMLDivElement>(null);
+  const megaCounterRef = useRef<HTMLDivElement>(null);
 
-  // Maximum attendance across all seasons for relative progress calculation
-  const maxAttendance = Math.max(
-    ...ATTENDANCE_TIMELINE.map((item) => item.totalSpectators)
-  );
+  // Counter refs for the 4 big stats
+  const countClubsRef = useRef<HTMLSpanElement>(null);
+  const countMatchdayRef = useRef<HTMLSpanElement>(null);
+  const countGoalsRef = useRef<HTMLSpanElement>(null);
+  const countPassesRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
-    const el = counterRef.current;
-    if (!el) return;
+    gsap.registerPlugin(ScrollTrigger);
 
-    const obj = { val: 0 };
-    const targetVal = currentRecord.totalSpectators;
+    const ctx = gsap.context(() => {
+      // 1. Floating 3D cutouts parallax movement across 260vh scroll
+      gsap.to(leftCutoutRef.current, {
+        y: "-50vh",
+        rotation: -22,
+        ease: "none",
+        scrollTrigger: {
+          trigger: statsSectionRef.current,
+          start: "top top",
+          end: "bottom bottom",
+          scrub: 1.2,
+        },
+      });
 
-    const tween = gsap.to(obj, {
-      val: targetVal,
-      duration: 1.2,
-      ease: "power2.out",
-      onUpdate: () => {
-        el.textContent = Math.floor(obj.val).toLocaleString("id-ID");
-      },
-    });
+      gsap.to(rightCutoutRef.current, {
+        y: "-65vh",
+        rotation: 16,
+        ease: "none",
+        scrollTrigger: {
+          trigger: statsSectionRef.current,
+          start: "top top",
+          end: "bottom bottom",
+          scrub: 1.5,
+        },
+      });
 
-    return () => {
-      tween.kill();
-    };
+      // 2. Count-up animation for the 4 athletic numbers
+      const targets = [
+        { ref: countClubsRef, end: GLOBAL_KPI_STATS.totalClubs },
+        { ref: countMatchdayRef, end: GLOBAL_KPI_STATS.currentMatchday, prefix: "0" },
+        { ref: countGoalsRef, end: GLOBAL_KPI_STATS.totalGoalsScored },
+        { ref: countPassesRef, end: 78.4, suffix: "%", decimals: 1 },
+      ];
+
+      ScrollTrigger.create({
+        trigger: statsSectionRef.current,
+        start: "top 70%",
+        onEnter: () => {
+          targets.forEach((item) => {
+            const el = item.ref.current;
+            if (!el) return;
+            const obj = { val: 0 };
+            gsap.to(obj, {
+              val: item.end,
+              duration: 2,
+              ease: "power2.out",
+              onUpdate: () => {
+                if (item.decimals) {
+                  el.textContent = `${obj.val.toFixed(item.decimals)}${item.suffix || ""}`;
+                } else if (item.prefix && obj.val < 10) {
+                  el.textContent = `${item.prefix}${Math.floor(obj.val)}`;
+                } else {
+                  el.textContent = Math.floor(obj.val).toString();
+                }
+              },
+            });
+          });
+        },
+        once: true,
+      });
+
+      // 3. Mega attendance counter scrub
+      const megaEl = megaCounterRef.current;
+      if (megaEl) {
+        const obj = { val: 0 };
+        gsap.to(obj, {
+          val: currentRecord.totalSpectators,
+          duration: 1.2,
+          ease: "power2.out",
+          onUpdate: () => {
+            megaEl.textContent = Math.floor(obj.val).toLocaleString("id-ID");
+          },
+        });
+      }
+    }, statsSectionRef);
+
+    return () => ctx.revert();
   }, [selectedSeasonIndex, currentRecord.totalSpectators]);
 
   return (
-    <section
-      id="timeline"
-      ref={containerRef}
-      className="relative py-24 px-4 sm:px-8 border-t border-[#23232C] bg-[#0A0A0C] overflow-hidden"
-    >
-      {/* Background ambient lighting */}
-      <div className="absolute top-1/2 left-0 -translate-y-1/2 w-96 h-96 bg-[#D4FF00]/5 rounded-full blur-[140px] pointer-events-none" />
-
-      <div className="mx-auto max-w-7xl">
-        {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-          <div>
-            <div className="flex items-center gap-2 mb-3">
-              <span className="w-2 h-2 rounded-full bg-[#D4FF00]" />
-              <span className="text-xs font-mono tracking-widest text-[#D4FF00] uppercase">
-                REKOR KEHADIRAN STADION // 2021 - 2027
-              </span>
+    <>
+      {/* 1. On-Stats 260vh Pinned Pane */}
+      <section
+        id="stats"
+        ref={statsSectionRef}
+        data-section="on-stats"
+        data-tone="dark"
+        data-stats-pin="true"
+        className="relative w-full max-md:overflow-x-clip md:h-[260vh] bg-[#0B0A0F]"
+      >
+        <div
+          ref={statsPaneRef}
+          data-stats-pane="true"
+          className="flex flex-col items-center justify-center overflow-x-clip px-6 py-16 md:sticky md:top-0 md:h-screen md:py-0 select-none"
+        >
+          {/* Floating Parallax Cutout 1: Classic Football (Left side) */}
+          <div
+            ref={leftCutoutRef}
+            aria-hidden="true"
+            data-on-field-catch="true"
+            className="pointer-events-none absolute -left-12 top-[38%] z-20 w-[42vw] md:w-[26vw] will-change-transform filter drop-shadow-[0_20px_45px_rgba(0,0,0,0.8)]"
+            style={{ transform: "rotate(-10deg)" }}
+          >
+            <div className="relative aspect-square w-full opacity-85">
+              <div className="w-full h-full rounded-full border-2 border-[#D4FF00]/30 bg-gradient-to-tr from-[#131318] to-[#23232C] flex items-center justify-center p-8">
+                <span className="text-7xl md:text-9xl font-anton text-[#D4FF00]/40">⚽</span>
+              </div>
             </div>
-            <h2 className="text-4xl sm:text-6xl md:text-7xl font-bold uppercase tracking-tight font-anton text-[#F4F4F6] leading-none">
-              GELOMBANG SUPORTER
-            </h2>
-          </div>
-          <p className="max-w-md text-sm sm:text-base text-[#8E8E9A] font-sans">
-            Transformasi atmosfer sepak bola tanah air dari era sistem bubble tanpa penonton hingga mencetak rekor jutaan suporter di tribun setiap musimnya.
-          </p>
-        </div>
-
-        {/* Season Selector Tabs */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-4 scrollbar-none">
-          {ATTENDANCE_TIMELINE.map((item, index) => {
-            const isActive = selectedSeasonIndex === index;
-            return (
-              <button
-                key={item.season}
-                onClick={() => setSelectedSeasonIndex(index)}
-                className={`relative px-5 py-3 rounded-xl font-mono text-xs uppercase tracking-wider whitespace-nowrap transition-all duration-300 flex items-center gap-2 border ${
-                  isActive
-                    ? "bg-[#D4FF00] text-[#0A0A0C] border-[#D4FF00] font-bold shadow-[0_0_20px_rgba(212,255,0,0.25)] scale-105"
-                    : "bg-[#131318] text-[#8E8E9A] border-[#23232C] hover:border-[#D4FF00]/40 hover:text-[#F4F4F6]"
-                }`}
-              >
-                <Calendar className={`w-3.5 h-3.5 ${isActive ? "text-[#0A0A0C]" : "text-[#8E8E9A]"}`} />
-                <span>{item.season}</span>
-                {item.status === "ongoing" && (
-                  <span
-                    className={`text-[9px] px-1.5 py-0.5 rounded-full uppercase font-bold ${
-                      isActive ? "bg-[#0A0A0C] text-[#D4FF00]" : "bg-[#D4FF00]/10 text-[#D4FF00]"
-                    }`}
-                  >
-                    LIVE
-                  </span>
-                )}
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Main Attendance Display Card */}
-        <div className="mt-8 p-6 sm:p-10 lg:p-12 rounded-3xl bg-[#131318]/90 border border-[#23232C] backdrop-blur-xl relative overflow-hidden">
-          {/* Subtle Year Backdrop */}
-          <div className="absolute right-4 bottom-2 text-8xl sm:text-[14rem] md:text-[18rem] font-anton text-[#F4F4F6]/[0.03] select-none pointer-events-none leading-none">
-            {currentRecord.season.split("/")[0]}
           </div>
 
-          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            {/* Left: Giant Attendance Counter */}
-            <div className="lg:col-span-7 flex flex-col">
-              <span className="text-xs sm:text-sm font-mono tracking-widest uppercase text-[#8E8E9A] mb-2 flex items-center gap-2">
-                <Users className="w-4 h-4 text-[#D4FF00]" />
-                TOTAL KEHADIRAN SUPORTER MUSIM {currentRecord.season}
-              </span>
+          {/* Floating Parallax Cutout 2: Golden Glove / Trophy (Right side) */}
+          <div
+            ref={rightCutoutRef}
+            aria-hidden="true"
+            data-on-field-catch="true"
+            className="pointer-events-none absolute -right-10 top-[22%] z-20 w-[48vw] md:w-[32vw] will-change-transform filter drop-shadow-[0_20px_45px_rgba(0,0,0,0.8)]"
+            style={{ transform: "rotate(6deg)" }}
+          >
+            <div className="relative aspect-square w-full opacity-85">
+              <div className="w-full h-full rounded-full border-2 border-[#0070BA]/30 bg-gradient-to-bl from-[#131318] to-[#23232C] flex items-center justify-center p-8">
+                <span className="text-7xl md:text-9xl font-anton text-[#0070BA]/40">🏆</span>
+              </div>
+            </div>
+          </div>
 
-              <div className="flex items-baseline font-mono tracking-tighter">
+          {/* Central 4 Massive Athletic Numbers (data-stats-park) */}
+          <div
+            ref={statsParkRef}
+            data-stats-park="true"
+            className="relative z-10 flex w-full flex-col items-center max-w-[1440px]"
+          >
+            <div className="grid w-full grid-cols-2 gap-x-6 gap-y-12 md:grid-cols-4">
+              {/* Stat 1: Total Klub */}
+              <div className="flex flex-col items-center gap-3 text-center">
+                <span className="text-[11px] font-mono uppercase tracking-[0.2em] text-[#8E8E9A]">
+                  Klub Peserta
+                </span>
                 <span
-                  ref={counterRef}
-                  className="text-6xl sm:text-8xl md:text-9xl font-bold text-[#F4F4F6] tabular-nums leading-none"
+                  ref={countClubsRef}
+                  className="font-anton uppercase text-[#F6F3EF] leading-none tabular-nums"
+                  style={{ fontSize: "clamp(56px, 8.2vw, 190px)" }}
                 >
-                  0
+                  18
                 </span>
-                <span className="text-xl sm:text-3xl font-sans text-[#D4FF00] ml-3 uppercase font-bold">
-                  JIWA
+                <span className="text-[10px] font-mono text-[#D4FF00] uppercase tracking-wider">
+                  Sabang - Merauke
                 </span>
               </div>
 
-              {/* Progress relative to peak */}
-              <div className="mt-8">
-                <div className="flex justify-between items-center text-xs font-mono text-[#8E8E9A] mb-2">
-                  <span>OKUPANSI TRIBUN DIBANDING REKOR TERTINGGI</span>
-                  <span className="text-[#D4FF00] font-bold">
-                    {maxAttendance > 0
-                      ? Math.round((currentRecord.totalSpectators / maxAttendance) * 100)
-                      : 0}
-                    %
-                  </span>
-                </div>
-                <div className="h-2 w-full bg-[#0A0A0C] rounded-full overflow-hidden border border-[#23232C]">
-                  <div
-                    className="h-full bg-gradient-to-r from-[#00529C] via-[#0070BA] to-[#D4FF00] transition-all duration-700 ease-out"
-                    style={{
-                      width: `${
-                        maxAttendance > 0
-                          ? (currentRecord.totalSpectators / maxAttendance) * 100
-                          : 0
-                      }%`,
-                    }}
-                  />
-                </div>
+              {/* Stat 2: Pekan Berjalan */}
+              <div className="flex flex-col items-center gap-3 text-center">
+                <span className="text-[11px] font-mono uppercase tracking-[0.2em] text-[#8E8E9A]">
+                  Pekan Berjalan
+                </span>
+                <span
+                  ref={countMatchdayRef}
+                  className="font-anton uppercase text-[#D4FF00] leading-none tabular-nums"
+                  style={{ fontSize: "clamp(56px, 8.2vw, 190px)" }}
+                >
+                  07
+                </span>
+                <span className="text-[10px] font-mono text-[#8E8E9A] uppercase tracking-wider">
+                  9 Laga / Pekan
+                </span>
               </div>
 
-              <p className="mt-6 text-sm text-[#8E8E9A] font-sans border-l-2 border-[#D4FF00] pl-4 italic">
-                &ldquo;{currentRecord.note}&rdquo;
-              </p>
+              {/* Stat 3: Total Gol */}
+              <div className="flex flex-col items-center gap-3 text-center">
+                <span className="text-[11px] font-mono uppercase tracking-[0.2em] text-[#8E8E9A]">
+                  Gol Tercipta
+                </span>
+                <span
+                  ref={countGoalsRef}
+                  className="font-anton uppercase text-[#F6F3EF] leading-none tabular-nums"
+                  style={{ fontSize: "clamp(56px, 8.2vw, 190px)" }}
+                >
+                  142
+                </span>
+                <span className="text-[10px] font-mono text-[#8E8E9A] uppercase tracking-wider">
+                  Rasio 2.63 / Laga
+                </span>
+              </div>
+
+              {/* Stat 4: Akurasi Operan */}
+              <div className="flex flex-col items-center gap-3 text-center">
+                <span className="text-[11px] font-mono uppercase tracking-[0.2em] text-[#8E8E9A]">
+                  Akurasi Operan
+                </span>
+                <span
+                  ref={countPassesRef}
+                  className="font-anton uppercase text-[#F6F3EF] leading-none tabular-nums"
+                  style={{ fontSize: "clamp(56px, 8.2vw, 190px)" }}
+                >
+                  78.4%
+                </span>
+                <span className="text-[10px] font-mono text-[#D4FF00] uppercase tracking-wider">
+                  Kualitas Penguasaan
+                </span>
+              </div>
             </div>
 
-            {/* Right: Key Milestones for Selected Season */}
-            <div className="lg:col-span-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4">
-              {/* Box 1: Highest Attendance Match */}
-              <div className="p-5 rounded-2xl bg-[#0A0A0C]/80 border border-[#23232C]">
-                <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-[#8E8E9A] mb-2">
-                  <Award className="w-4 h-4 text-[#D4FF00]" />
-                  <span>Pertandingan Teramai</span>
-                </div>
-                <p className="text-base sm:text-lg font-bold text-[#F4F4F6] font-mono leading-snug">
-                  {currentRecord.highestMatch}
-                </p>
+            {/* Timeline Scrubber (2021 ──── 2027) ala jjettas */}
+            <div className="relative mt-16 md:mt-24 w-full max-w-4xl px-4">
+              <div className="flex items-center justify-between border-b border-[#23232C] pb-4">
+                {ATTENDANCE_TIMELINE.map((item, index) => {
+                  const isActive = selectedSeasonIndex === index;
+                  return (
+                    <button
+                      key={item.season}
+                      onClick={() => setSelectedSeasonIndex(index)}
+                      className="group flex flex-col items-center gap-2 cursor-pointer transition-all duration-300 relative focus:outline-none"
+                    >
+                      <span
+                        className={`text-xs md:text-sm font-mono tracking-widest uppercase transition-colors ${
+                          isActive
+                            ? "text-[#D4FF00] font-bold scale-110"
+                            : "text-[#8E8E9A] hover:text-[#F6F3EF]"
+                        }`}
+                      >
+                        {item.season.split("/")[0]}
+                      </span>
+
+                      {/* Vertical Tick Mark */}
+                      <span
+                        className={`h-4 w-px transition-colors ${
+                          isActive ? "bg-[#D4FF00] h-6" : "bg-[#23232C] group-hover:bg-[#8E8E9A]"
+                        }`}
+                      />
+
+                      {/* Active Year Dot */}
+                      {isActive && (
+                        <span className="absolute -bottom-2 w-1.5 h-1.5 rounded-full bg-[#D4FF00] shadow-[0_0_8px_#D4FF00]" />
+                      )}
+                    </button>
+                  );
+                })}
               </div>
 
-              {/* Box 2: Average Attendance */}
-              <div className="p-5 rounded-2xl bg-[#0A0A0C]/80 border border-[#23232C]">
-                <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-[#8E8E9A] mb-2">
-                  <TrendingUp className="w-4 h-4 text-[#D4FF00]" />
-                  <span>Rata-Rata Per Laga</span>
-                </div>
-                <p className="text-2xl sm:text-3xl font-bold text-[#D4FF00] font-mono tabular-nums">
-                  {currentRecord.avgPerMatch.toLocaleString("id-ID")}{" "}
-                  <span className="text-xs text-[#8E8E9A] font-normal">PENONTON</span>
-                </p>
-              </div>
-
-              {/* Box 3: Venue of the Season */}
-              <div className="p-5 rounded-2xl bg-[#0A0A0C]/80 border border-[#23232C] sm:col-span-2 lg:col-span-1">
-                <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-[#8E8E9A] mb-2">
-                  <MapPin className="w-4 h-4 text-[#D4FF00]" />
-                  <span>Venue Paling Bergemuruh</span>
-                </div>
-                <p className="text-base font-medium text-[#F4F4F6] font-sans">
-                  {currentRecord.topVenue}
-                </p>
+              {/* Selected Season Detail Label */}
+              <div className="flex flex-col sm:flex-row items-center justify-between mt-4 text-xs font-mono text-[#8E8E9A]">
+                <span>
+                  EDISI:{" "}
+                  <strong className="text-[#F6F3EF] uppercase">
+                    {currentRecord.season}
+                  </strong>{" "}
+                  — {currentRecord.status === "ongoing" ? "SEDANG BERJALAN" : "SELESAI"}
+                </span>
+                <span className="text-[#D4FF00]">
+                  VENUE UTAMA: {currentRecord.topVenue}
+                </span>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      {/* 2. On-Total-Yards (Mega Number Display: 70vw) ala jjettas */}
+      <section
+        id="attendance-total"
+        data-section="on-total-yards"
+        data-tone="dark"
+        className="relative flex flex-col items-center justify-center overflow-hidden px-4 pt-10 pb-24 md:-mt-[25vh] md:min-h-[85vh] bg-[#0B0A0F] border-b border-[#23232C]/60 select-none"
+        aria-label="Total Penonton Stadion Musim Ini"
+      >
+        <div className="relative w-full max-w-7xl flex flex-col items-center text-center">
+          {/* Subtle Ambient Radial Light */}
+          <div
+            className="absolute inset-0 pointer-events-none opacity-25"
+            style={{
+              backgroundImage:
+                "radial-gradient(ellipse at center, #D4FF00 0%, transparent 60%)",
+              filter: "blur(110px)",
+            }}
+          />
+
+          {/* Ultra Mega 70vw Numeric Counter */}
+          <div className="relative w-full overflow-hidden">
+            <div
+              ref={megaCounterRef}
+              className="font-anton uppercase tracking-tighter text-[#F6F3EF] whitespace-nowrap text-center leading-[0.78]"
+              style={{
+                fontSize: "clamp(60px, 16vw, 240px)",
+              }}
+            >
+              {currentRecord.totalSpectators.toLocaleString("id-ID")}
+            </div>
+          </div>
+
+          {/* Monospace Sub-label */}
+          <div className="mt-8 flex flex-col items-center gap-2">
+            <p className="text-xs sm:text-sm font-mono uppercase tracking-[0.3em] text-[#8E8E9A]">
+              TOTAL KEHADIRAN SUPORTER MUSIM {currentRecord.season}
+            </p>
+            <p className="text-[11px] font-mono text-[#D4FF00] uppercase tracking-wider max-w-md">
+              &ldquo;{currentRecord.note}&rdquo;
+            </p>
+          </div>
+        </div>
+      </section>
+    </>
   );
 }
