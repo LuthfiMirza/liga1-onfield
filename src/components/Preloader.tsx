@@ -11,24 +11,32 @@ export default function Preloader({ onComplete }: PreloaderProps) {
   const [progress, setProgress] = useState(0);
   const [isDone, setIsDone] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const curtainTopRef = useRef<HTMLDivElement>(null);
-  const curtainBottomRef = useRef<HTMLDivElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const markFillRef = useRef<SVGRectElement>(null);
+  const counterRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
       const counterObj = { value: 0 };
 
-      // Number counter 0 -> 100
+      // Number counter 0 -> 100 with liquid mark fill (y: 43 -> 0, height: 0 -> 43)
       gsap.to(counterObj, {
         value: 100,
         duration: 2.2,
         ease: "power2.inOut",
         onUpdate: () => {
-          setProgress(Math.floor(counterObj.value));
+          const currentVal = Math.floor(counterObj.value);
+          setProgress(currentVal);
+
+          // SVG fill calculation (viewBox height 43)
+          if (markFillRef.current) {
+            const h = (currentVal / 100) * 43;
+            markFillRef.current.setAttribute("y", (43 - h).toString());
+            markFillRef.current.setAttribute("height", h.toString());
+          }
         },
         onComplete: () => {
-          // Exit curtain animation
+          // Exit animation ala jjettas: panel slides up smoothly
           const tl = gsap.timeline({
             onComplete: () => {
               setIsDone(true);
@@ -36,30 +44,26 @@ export default function Preloader({ onComplete }: PreloaderProps) {
             },
           });
 
-          tl.to(contentRef.current, {
+          tl.to(counterRef.current, {
             opacity: 0,
-            y: -20,
-            duration: 0.4,
+            duration: 0.3,
             ease: "power2.in",
           })
             .to(
-              curtainTopRef.current,
+              markFillRef.current?.parentElement || {},
               {
-                yPercent: -100,
-                duration: 0.8,
-                ease: "expo.inOut",
+                scale: 0.95,
+                opacity: 0.4,
+                duration: 0.35,
+                ease: "power2.in",
               },
-              "-=0.1"
+              "-=0.2"
             )
-            .to(
-              curtainBottomRef.current,
-              {
-                yPercent: 100,
-                duration: 0.8,
-                ease: "expo.inOut",
-              },
-              "<"
-            );
+            .to(panelRef.current, {
+              yPercent: -100,
+              duration: 0.85,
+              ease: "expo.inOut",
+            });
         },
       });
     }, containerRef);
@@ -72,55 +76,73 @@ export default function Preloader({ onComplete }: PreloaderProps) {
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 z-50 flex flex-col items-center justify-center overflow-hidden pointer-events-none select-none"
+      data-home-loader="true"
+      data-loader-phase="loading"
+      className="pointer-events-auto fixed inset-0 z-[100] overflow-hidden select-none"
     >
-      {/* Top Curtain */}
+      {/* Background Curtain Panel */}
       <div
-        ref={curtainTopRef}
-        className="absolute top-0 left-0 w-full h-1/2 bg-[#0A0A0C] border-b border-[#23232C] z-10"
-      />
-
-      {/* Bottom Curtain */}
-      <div
-        ref={curtainBottomRef}
-        className="absolute bottom-0 left-0 w-full h-1/2 bg-[#0A0A0C] border-t border-[#23232C] z-10"
-      />
-
-      {/* Central Content */}
-      <div
-        ref={contentRef}
-        className="relative z-20 flex flex-col items-center justify-center px-6 text-center"
+        ref={panelRef}
+        className="relative flex h-full w-full flex-col items-center justify-center bg-[#0B0A0F]"
       >
-        {/* Subtle Pitch Badge */}
-        <div className="flex items-center gap-2 mb-4 px-3 py-1 rounded-full bg-[#131318] border border-[#23232C]">
-          <span className="w-2 h-2 rounded-full bg-[#D4FF00] animate-pulse" />
-          <span className="text-[11px] font-mono tracking-widest uppercase text-[#8E8E9A]">
-            I.LEAGUE // BRI SUPER LEAGUE 2026/27
-          </span>
-        </div>
+        {/* Central Logo Mark with Liquid ClipPath */}
+        <div data-loader-mark="true" className="relative flex flex-col items-center">
+          <svg
+            viewBox="0 0 37 43"
+            xmlns="http://www.w3.org/2000/svg"
+            className="relative h-28 w-auto md:h-36"
+            role="img"
+            aria-label="Loading Liga 1 Experience"
+          >
+            <defs>
+              <clipPath id="liga1-loader-clip">
+                {/* Athletic geometric shield mark */}
+                <path d="M27.9271 35.2244L28.9161 42.818L18.486 35.4071L7.90283 42.9264L8.88835 35.3355L18.4858 28.5164L27.9271 35.2244Z" />
+                <path d="M15.4903 23.3423L0 34.2789L1.75369 20.6774L7.34806 16.7187L6.74483 23.1164L10.9979 20.1124L13.1327 3.79814L18.5 0L15.4903 23.3423Z" />
+                <path d="M23.8673 3.79814L26.0021 20.1124L30.2552 23.1164L29.6519 16.7187L35.2463 20.6774L37 34.2789L21.5097 23.3423L18.5 0L23.8673 3.79814Z" />
+              </clipPath>
+            </defs>
 
-        {/* Massive 0-100 Percentage Counter */}
-        <div className="flex items-baseline font-mono tracking-tighter">
-          <span className="text-8xl sm:text-9xl md:text-[14rem] font-bold tabular-nums text-[#F4F4F6] leading-none">
-            {progress.toString().padStart(2, "0")}
-          </span>
-          <span className="text-3xl sm:text-5xl md:text-7xl font-sans text-[#D4FF00] ml-2">
-            %
-          </span>
-        </div>
+            {/* Ghost Silhouette Base (18% Opacity) */}
+            <g fill="#F6F3EF" opacity="0.18">
+              <path d="M27.9271 35.2244L28.9161 42.818L18.486 35.4071L7.90283 42.9264L8.88835 35.3355L18.4858 28.5164L27.9271 35.2244Z" />
+              <path d="M15.4903 23.3423L0 34.2789L1.75369 20.6774L7.34806 16.7187L6.74483 23.1164L10.9979 20.1124L13.1327 3.79814L18.5 0L15.4903 23.3423Z" />
+              <path d="M23.8673 3.79814L26.0021 20.1124L30.2552 23.1164L29.6519 16.7187L35.2463 20.6774L37 34.2789L21.5097 23.3423L18.5 0L23.8673 3.79814Z" />
+            </g>
 
-        {/* Progress Bar & Status */}
-        <div className="w-64 sm:w-80 mt-6">
-          <div className="h-[2px] w-full bg-[#23232C] rounded-full overflow-hidden">
-            <div
-              className="h-full bg-[#D4FF00] transition-all duration-75 ease-out shadow-[0_0_12px_#D4FF00]"
-              style={{ width: `${progress}%` }}
+            {/* Liquid Fill Rect clipped to Shield */}
+            <rect
+              ref={markFillRef}
+              x="0"
+              y="43"
+              width="37"
+              height="0"
+              fill="#D4FF00"
+              clipPath="url(#liga1-loader-clip)"
             />
+          </svg>
+
+          {/* Monospace 0-100% Counter under logo */}
+          <div
+            ref={counterRef}
+            aria-hidden="true"
+            className="absolute left-1/2 top-full mt-5 -translate-x-1/2 select-none text-[11px] tabular-nums md:text-xs font-mono"
+            style={{
+              letterSpacing: "0.2em",
+              paddingLeft: "0.2em",
+              color: "#F6F3EF",
+              opacity: 0.5,
+            }}
+          >
+            {progress}%
           </div>
-          <div className="flex justify-between items-center mt-2 text-[10px] font-mono text-[#8E8E9A] uppercase tracking-wider">
-            <span>MEMUAT DATA STADION</span>
-            <span className="text-[#D4FF00]">18 KLUB TERHUBUNG</span>
-          </div>
+        </div>
+
+        {/* Subtle Brand Tagline at Bottom */}
+        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 text-center">
+          <p className="text-[10px] font-mono uppercase tracking-[0.25em] text-[#8E8E9A]">
+            BRI SUPER LEAGUE 2026/27 · ON-FIELD
+          </p>
         </div>
       </div>
     </div>
