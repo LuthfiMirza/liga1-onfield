@@ -9,7 +9,7 @@
 - [ ] **Fase 2: Core Layout, Preloader, Smooth Scroll & Hero Section**
   - [x] Setup `SmoothScrollProvider` dengan Lenis.
   - [x] Buat komponen `Preloader` (counter 0-100%).
-  - Buat `Navbar` bergaya floating kaca (glassmorphism).
+  - [x] Buat `Navbar` bergaya floating kaca (glassmorphism).
   - Buat `HeroOnField` dengan tipografi raksasa, gambar utama parallax, dan 4 counter KPI cepat.
 
 - [ ] **Fase 3: Interactive Season Timeline, Klasemen & Jadwal**
