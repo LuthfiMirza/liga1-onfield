@@ -131,14 +131,30 @@ export default function HeroOnField() {
 
           <h1
             ref={headlineRef}
-            className="text-7xl sm:text-9xl md:text-[13rem] lg:text-[16rem] font-bold uppercase tracking-tighter leading-[0.84] text-[#F4F4F6] font-anton select-none"
+            className="text-6xl sm:text-8xl md:text-[10rem] lg:text-[13rem] font-bold uppercase tracking-tighter leading-[0.85] text-[#F4F4F6] font-anton select-none"
           >
             ON-FIELD
+            <span className="block text-2xl sm:text-4xl md:text-6xl lg:text-7xl text-transparent bg-clip-text bg-gradient-to-r from-[#D4FF00] via-[#F4F4F6] to-[#0070BA] tracking-tight mt-1">
+              · BRI SUPER LEAGUE ·
+            </span>
           </h1>
 
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mt-4">
-            <div className="max-w-xl">
-              <p className="text-base sm:text-lg text-[#8E8E9A] leading-relaxed font-sans">
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mt-6">
+            <div className="max-w-xl flex flex-col gap-4">
+              {/* Iconic Quote Box */}
+              <div className="p-4 sm:p-5 rounded-2xl bg-[#131318]/80 border border-[#23232C] backdrop-blur-md">
+                <div className="flex items-center gap-2 mb-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#D4FF00]" />
+                  <span className="text-[10px] font-mono uppercase tracking-widest text-[#D4FF00]">
+                    KUTIPAN SEMANGAT KOMPETISI
+                  </span>
+                </div>
+                <p className="text-sm sm:text-base text-[#F4F4F6] font-sans italic leading-relaxed">
+                  &ldquo;Sepak bola Indonesia bukan sekadar 90 menit di atas rumput hijau; ini adalah identitas kota, kehormatan lambang di dada, dan detak jantung jutaan suporter di tribun.&rdquo;
+                </p>
+              </div>
+
+              <p className="text-sm sm:text-base text-[#8E8E9A] leading-relaxed font-sans">
                 Eksplorasi visual dan data berkecepatan tinggi dari panggung sepak bola kasta tertinggi Indonesia. Pantau persaingan 18 klub, intensitas tribun stadion, dan catatan rekor legendaris musim ini.
               </p>
             </div>
