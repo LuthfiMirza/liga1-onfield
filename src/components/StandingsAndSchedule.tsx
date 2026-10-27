@@ -1,15 +1,61 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
-import { STANDINGS_DATA, FIXTURES_WEEK_7 } from "@/data/liga1Data";
-import { Trophy, CalendarDays, Tv, MapPin, Search } from "lucide-react";
+import { STANDINGS_DATA, FIXTURES_WEEK_7, StandingsRow, MatchFixture } from "@/data/liga1Data";
+import { Trophy, CalendarDays, Tv, MapPin, Search, RotateCw, Radio } from "lucide-react";
 
 export default function StandingsAndSchedule() {
   const [activeTab, setActiveTab] = useState<"standings" | "fixtures">("standings");
   const [searchQuery, setSearchQuery] = useState("");
+  
+  // Live Data State
+  const [standings, setStandings] = useState<StandingsRow[]>(STANDINGS_DATA);
+  const [fixtures, setFixtures] = useState<MatchFixture[]>(FIXTURES_WEEK_7);
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [lastSyncTime, setLastSyncTime] = useState<string>("Tersinkronisasi");
+  const [isLiveConnected, setIsLiveConnected] = useState(true);
 
-  const filteredStandings = STANDINGS_DATA.filter(
+  // Fungsi Fetch Live Data dari Next.js API Route kita
+  const syncLiveData = async () => {
+    try {
+      setIsSyncing(true);
+      const res = await fetch("/api/liga1/live");
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && data.standings && data.standings.length > 0) {
+          setStandings(data.standings);
+        }
+        if (data.success && data.fixtures && data.fixtures.length > 0) {
+          setFixtures(data.fixtures);
+        }
+        const now = new Date();
+        setLastSyncTime(
+          now.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", second: "2-digit" }) + " WIB"
+        );
+        setIsLiveConnected(true);
+      }
+    } catch (err) {
+      console.warn("Live sync error, using cached data:", err);
+      setIsLiveConnected(false);
+    } finally {
+      setIsSyncing(false);
+    }
+  };
+
+  useEffect(() => {
+    // 1. Sync pertama kali saat load
+    syncLiveData();
+
+    // 2. Auto-polling setiap 60 detik di background
+    const interval = setInterval(() => {
+      syncLiveData();
+    }, 60000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const filteredStandings = standings.filter(
     (row) =>
       row.clubName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       row.code.toLowerCase().includes(searchQuery.toLowerCase())
@@ -27,12 +73,22 @@ export default function StandingsAndSchedule() {
       <div className="grid gap-12 lg:grid-cols-[minmax(320px,min(32vw,480px))_1fr] lg:gap-16 items-start">
         {/* COLUMN 1 (LEFT): Editorial Heading + Stadium Atmosphere Portrait (4:5) */}
         <div className="flex flex-col">
-          {/* Main Display Title */}
-          <div className="flex items-center gap-2 mb-3">
-            <span className="w-2 h-2 rounded-full bg-[#00529C]" />
-            <span className="text-xs font-mono tracking-widest text-[#00529C] uppercase font-bold">
-              PANGGUNG KOMPETISI RESMI
-            </span>
+          {/* Main Display Title with Realtime Live Badge */}
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <span className={`w-2.5 h-2.5 rounded-full ${isLiveConnected ? "bg-[#00529C] animate-pulse" : "bg-[#8E8E9A]"}`} />
+              <span className="text-xs font-mono tracking-widest text-[#00529C] uppercase font-bold">
+                PANGGUNG KOMPETISI RESMI
+              </span>
+            </div>
+
+            {/* Live Indicator Pill */}
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#FFFFFF] border border-[#E2DDD5] shadow-sm">
+              <Radio className="w-3 h-3 text-[#13cf00] animate-pulse" />
+              <span className="text-[10px] font-mono font-bold text-[#171220] uppercase tracking-wider">
+                LIVE API
+              </span>
+            </div>
           </div>
 
           <h2
@@ -42,9 +98,14 @@ export default function StandingsAndSchedule() {
             KLASEMEN & JADWAL
           </h2>
 
-          <p className="label-sm mt-3 font-mono text-xs text-[#6E6D7A] uppercase tracking-wider">
-            BRI SUPER LEAGUE // MUSIM 2026/2027 • LIVE DARI ILEAGUE.ID
-          </p>
+          <div className="flex items-center justify-between mt-3">
+            <p className="label-sm font-mono text-xs text-[#6E6D7A] uppercase tracking-wider">
+              BRI SUPER LEAGUE 2026/27 • ILEAGUE.ID
+            </p>
+            <span className="text-[10px] font-mono text-[#6E6D7A] bg-[#FAF8F5] px-2 py-0.5 rounded border border-[#E2DDD5]">
+              Update: {lastSyncTime}
+            </span>
+          </div>
 
           {/* Editorial Portrait (4:5 Aspect Ratio) ala jjettas */}
           <div className="relative mt-8 aspect-[4/5] w-full overflow-hidden rounded-2xl border border-[#E2DDD5] bg-[#FFFFFF] shadow-xl group">
@@ -88,7 +149,7 @@ export default function StandingsAndSchedule() {
 
         {/* COLUMN 2 (RIGHT): Tab Controls + Standings Table / Fixtures */}
         <div className="flex flex-col gap-6">
-          {/* Top Controls: Tabs & Search Bar */}
+          {/* Top Controls: Tabs, Search Bar & Manual Sync Button */}
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 pb-4 border-b border-[#E2DDD5]">
             {/* Tab Buttons */}
             <div className="flex items-center p-1 rounded-xl bg-[#FAF8F5] border border-[#E2DDD5]">
@@ -116,19 +177,31 @@ export default function StandingsAndSchedule() {
               </button>
             </div>
 
-            {/* Quick Search Bar */}
-            {activeTab === "standings" && (
-              <div className="relative w-full sm:w-64">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#6E6D7A]" />
-                <input
-                  type="text"
-                  placeholder="Cari klub..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-9 pr-4 py-2 bg-[#FFFFFF] border border-[#E2DDD5] rounded-xl text-xs font-mono text-[#171220] placeholder-[#6E6D7A] focus:outline-none focus:border-[#171220]"
-                />
-              </div>
-            )}
+            {/* Quick Search & Sync Button */}
+            <div className="flex items-center gap-3">
+              {activeTab === "standings" && (
+                <div className="relative w-full sm:w-60">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#6E6D7A]" />
+                  <input
+                    type="text"
+                    placeholder="Cari klub..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full pl-9 pr-4 py-2 bg-[#FFFFFF] border border-[#E2DDD5] rounded-xl text-xs font-mono text-[#171220] placeholder-[#6E6D7A] focus:outline-none focus:border-[#171220]"
+                  />
+                </div>
+              )}
+
+              {/* Manual Refresh Button */}
+              <button
+                onClick={syncLiveData}
+                disabled={isSyncing}
+                title="Tarik pembaruan data live dari ileague.id"
+                className="flex items-center justify-center p-2.5 rounded-xl bg-[#FFFFFF] border border-[#E2DDD5] hover:border-[#171220] text-[#171220] shadow-sm hover:shadow transition-all disabled:opacity-50"
+              >
+                <RotateCw className={`w-3.5 h-3.5 ${isSyncing ? "animate-spin text-[#00529C]" : ""}`} />
+              </button>
+            </div>
           </div>
 
           {/* TAB 1: KLASEMEN TABULAR TABLE */}
@@ -256,7 +329,7 @@ export default function StandingsAndSchedule() {
                     Zona Degradasi (16-18)
                   </span>
                 </div>
-                <span>Data Live: ileague.id // Pekan 07</span>
+                <span>Sinkronisasi Otomatis API // ileague.id</span>
               </div>
             </div>
           )}
@@ -264,7 +337,7 @@ export default function StandingsAndSchedule() {
           {/* TAB 2: FIXTURES JADWAL PEKAN 7 */}
           {activeTab === "fixtures" && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-in fade-in duration-300">
-              {FIXTURES_WEEK_7.map((fix) => (
+              {fixtures.map((fix) => (
                 <div
                   key={fix.id}
                   className="p-5 rounded-2xl bg-[#FFFFFF] border border-[#E2DDD5] hover:border-[#171220] shadow-sm hover:shadow-md transition-all flex flex-col justify-between gap-4"
