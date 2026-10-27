@@ -6,11 +6,11 @@
   - [x] Buat konfigurasi font (`Oswald`/`Anton` + `Space Grotesk` + `Inter`) dan skema warna di Tailwind.
   - [x] Buat file `src/data/liga1Data.ts` berisi data lengkap dari `ileague.id` (18 klub, klasemen, jadwal pekan 7, top scorer/assist/saves/passes, rekor penonton 2021-2027, berita, dan partner).
 
-- [ ] **Fase 2: Core Layout, Preloader, Smooth Scroll & Hero Section**
+- [x] **Fase 2: Core Layout, Preloader, Smooth Scroll & Hero Section**
   - [x] Setup `SmoothScrollProvider` dengan Lenis.
   - [x] Buat komponen `Preloader` (counter 0-100%).
   - [x] Buat `Navbar` bergaya floating kaca (glassmorphism).
-  - Buat `HeroOnField` dengan tipografi raksasa, gambar utama parallax, dan 4 counter KPI cepat.
+  - [x] Buat `HeroOnField` dengan tipografi raksasa, gambar utama parallax, dan 4 counter KPI cepat.
 
 - [ ] **Fase 3: Interactive Season Timeline, Klasemen & Jadwal**
   - Buat komponen `SeasonTimeline` (selector tahun 2021-2027 dengan animasi angka total penonton).
