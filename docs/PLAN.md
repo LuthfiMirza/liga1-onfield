@@ -16,9 +16,9 @@
   - [x] Buat komponen `SeasonTimeline` (selector tahun 2021-2027 dengan animasi angka total penonton).
   - [x] Buat komponen `StandingsAndSchedule` (Tabel Klasemen 18 Klub & Kartu Jadwal Pekan 7 yang mendukung swipe/horizontal scroll).
 
-- [ ] **Fase 4: "Record Books" (Filterable Top Stats Grid)**
-  - Buat komponen `RecordBooksGrid` dengan tab filter interaktif (`Semua`, `Top Scorer`, `Top Assist`, `Top Saves`, `Top Passes`, `Rekor Penonton`).
-  - Terapkan desain kartu tipografi besar ala `jjettas.com/on-field`.
+- [x] **Fase 4: "Record Books" (Filterable Top Stats Grid)**
+  - [x] Buat komponen `RecordBooksGrid` dengan tab filter interaktif (`Semua`, `Top Scorer`, `Top Assist`, `Top Saves`, `Top Passes`, `Rekor Penonton`).
+  - [x] Terapkan desain kartu tipografi besar ala `jjettas.com/on-field`.
 
 - [ ] **Fase 5: Pinned Editorial Showcase, Partner Marquee & Footer Portal**
   - Buat komponen `InfluenceShowcase` (Pinned scroll + kinetic text marquee + kartu berita & galeri pertandingan).
