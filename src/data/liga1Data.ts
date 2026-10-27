@@ -60,7 +60,7 @@ export interface MatchFixture {
 export interface PlayerStat {
   id: string;
   rank: number;
-  category: 'scorer' | 'assist' | 'saves' | 'passes';
+  category: 'scorer' | 'assist' | 'saves' | 'passes' | 'attendance';
   playerName: string;
   position: string;
   clubName: string;
@@ -806,6 +806,64 @@ export const RECORD_BOOKS_DATA: PlayerStat[] = [
     unit: "OPERAN",
     detail: "Akurasi 86.2% • Progressive Carries 24 Kali",
     seasonStats: { matches: 6, minutes: 510, efficiency: "65.8 Operan / Laga" },
+  },
+
+  // Rekor Penonton Stadion (All-Time & Season)
+  {
+    id: "stat-att1",
+    rank: 1,
+    category: "attendance",
+    playerName: "Persija vs Persib",
+    position: "Stadion Utama GBK",
+    clubName: "El Clásico Indonesia",
+    clubCode: "SUGBK",
+    clubColor: "#E42313",
+    value: 60134,
+    unit: "PENONTON",
+    detail: "Rekor Penonton Tertinggi Laga Tunggal Era Liga 1",
+    seasonStats: { matches: 1, minutes: 90, efficiency: "Okupansi 96% SUGBK" },
+  },
+  {
+    id: "stat-att2",
+    rank: 2,
+    category: "attendance",
+    playerName: "Persija vs Persebaya",
+    position: "Jakarta International Stadium",
+    clubName: "Duel Klasik Perserikatan",
+    clubCode: "JIS",
+    clubColor: "#E42313",
+    value: 55430,
+    unit: "PENONTON",
+    detail: "Rekor Kehadiran Tertinggi Jakarta International Stadium",
+    seasonStats: { matches: 1, minutes: 90, efficiency: "Okupansi 88% JIS" },
+  },
+  {
+    id: "stat-att3",
+    rank: 3,
+    category: "attendance",
+    playerName: "Persebaya vs Arema FC",
+    position: "Gelora Bung Tomo",
+    clubName: "Super Derbi Jawa Timur",
+    clubCode: "GBT",
+    clubColor: "#007A33",
+    value: 45000,
+    unit: "PENONTON",
+    detail: "Koreografi Raksasa 360 Derajat & Sold Out Tribun",
+    seasonStats: { matches: 1, minutes: 90, efficiency: "Sold Out 100% GBT" },
+  },
+  {
+    id: "stat-att4",
+    rank: 4,
+    category: "attendance",
+    playerName: "Persib vs Madura United",
+    position: "GBLA Bandung",
+    clubName: "Final Championship Series",
+    clubCode: "GBLA",
+    clubColor: "#004B93",
+    value: 32400,
+    unit: "PENONTON",
+    detail: "Puncak Perayaan Juara di Hadapan Lautan Biru",
+    seasonStats: { matches: 1, minutes: 90, efficiency: "Kapasitas Penuh GBLA" },
   },
 ];
 

@@ -3,9 +3,9 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { RECORD_BOOKS_DATA, PlayerStat } from "@/data/liga1Data";
-import { Target, Sparkles, Shield, Activity, Flame, Award } from "lucide-react";
+import { Target, Sparkles, Shield, Activity, Flame, Award, Users } from "lucide-react";
 
-type FilterCategory = "all" | "scorer" | "assist" | "saves" | "passes";
+type FilterCategory = "all" | "scorer" | "assist" | "saves" | "passes" | "attendance";
 
 const CATEGORIES = [
   { id: "all", label: "SEMUA REKOR", icon: Flame },
@@ -13,6 +13,7 @@ const CATEGORIES = [
   { id: "assist", label: "TOP ASSIST", icon: Sparkles },
   { id: "saves", label: "TOP SAVES", icon: Shield },
   { id: "passes", label: "TOP PASSES", icon: Activity },
+  { id: "attendance", label: "REKOR PENONTON", icon: Users },
 ];
 
 export default function RecordBooksGrid() {
@@ -38,15 +39,15 @@ export default function RecordBooksGrid() {
             <div className="flex items-center gap-2 mb-3">
               <span className="w-2 h-2 rounded-full bg-[#D4FF00]" />
               <span className="text-xs font-mono tracking-widest text-[#D4FF00] uppercase">
-                RECORD BOOKS // PUNCAK PERFORMA
+                REWRITING THE RECORD BOOKS // PUNCAK PERFORMA LIGA 1
               </span>
             </div>
             <h2 className="text-4xl sm:text-6xl md:text-8xl font-bold uppercase tracking-tight font-anton text-[#F4F4F6] leading-[0.88]">
-              INDIVIDUAL DOMINANCE
+              INDIVIDUAL & STADIUM RECORDS
             </h2>
           </div>
           <p className="max-w-md text-sm sm:text-base text-[#8E8E9A] font-sans">
-            Para bintang pembeda hasil akhir. Dari mesin gol predator kotak penalti, visi magis playmaker, hingga dinding kokoh di bawah mistar gawang.
+            Catatan rekor bersejarah sepak bola Indonesia. Dari mesin gol predator kotak penalti, visi magis playmaker, benteng tangguh di bawah mistar, hingga atmosfer gemuruh puluhan ribu suporter di tribun.
           </p>
         </div>
 
@@ -81,6 +82,10 @@ export default function RecordBooksGrid() {
           <AnimatePresence>
             {filteredStats.map((stat: PlayerStat) => {
               const isRankOne = stat.rank === 1;
+              const formattedValue =
+                stat.value >= 1000
+                  ? stat.value.toLocaleString("id-ID")
+                  : stat.value.toString();
 
               return (
                 <motion.div
@@ -116,17 +121,17 @@ export default function RecordBooksGrid() {
                     </span>
 
                     <span className="text-[10px] font-mono tracking-widest uppercase text-[#8E8E9A]">
-                      {stat.category.toUpperCase()} • 2026/27
+                      {stat.category === "attendance" ? "STADION" : stat.category.toUpperCase()} • LIGA 1
                     </span>
                   </div>
 
                   {/* Extreme Stat Value */}
                   <div className="my-6">
                     <div className="flex items-baseline font-mono tracking-tighter">
-                      <span className="text-7xl sm:text-8xl md:text-9xl font-bold tabular-nums text-[#F4F4F6] leading-none group-hover:text-[#D4FF00] transition-colors">
-                        {stat.value}
+                      <span className="text-6xl sm:text-7xl md:text-8xl font-bold tabular-nums text-[#F4F4F6] leading-none group-hover:text-[#D4FF00] transition-colors">
+                        {formattedValue}
                       </span>
-                      <span className="text-sm sm:text-base font-bold font-mono text-[#D4FF00] ml-3 tracking-widest uppercase">
+                      <span className="text-xs sm:text-sm font-bold font-mono text-[#D4FF00] ml-3 tracking-widest uppercase">
                         {stat.unit}
                       </span>
                     </div>
