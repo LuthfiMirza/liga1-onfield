@@ -13,7 +13,7 @@
   - [x] Buat `HeroOnField` dengan tipografi raksasa, gambar utama parallax, dan 4 counter KPI cepat.
 
 - [ ] **Fase 3: Interactive Season Timeline, Klasemen & Jadwal**
-  - Buat komponen `SeasonTimeline` (selector tahun 2021-2027 dengan animasi angka total penonton).
+  - [x] Buat komponen `SeasonTimeline` (selector tahun 2021-2027 dengan animasi angka total penonton).
   - Buat komponen `StandingsAndSchedule` (Tabel Klasemen 18 Klub & Kartu Jadwal Pekan 7 yang mendukung swipe/horizontal scroll).
 
 - [ ] **Fase 4: "Record Books" (Filterable Top Stats Grid)**
