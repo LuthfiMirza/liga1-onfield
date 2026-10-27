@@ -33,6 +33,8 @@ export const metadata: Metadata = {
     "Showcase scrollytelling interaktif BRI Super League (Liga 1 Indonesia). Statistik real-time, klasemen 18 klub, jadwal pekan 7, dan rekor penonton.",
 };
 
+import SmoothScrollProvider from "@/components/SmoothScrollProvider";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -44,7 +46,7 @@ export default function RootLayout({
       className={`${anton.variable} ${oswald.variable} ${spaceGrotesk.variable} ${inter.variable} dark`}
     >
       <body className="min-h-screen bg-[#0A0A0C] text-[#F4F4F6] antialiased selection:bg-[#D4FF00] selection:text-[#0A0A0C]">
-        {children}
+        <SmoothScrollProvider>{children}</SmoothScrollProvider>
       </body>
     </html>
   );
