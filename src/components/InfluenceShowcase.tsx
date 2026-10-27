@@ -1,10 +1,58 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { NEWS_EDITORIAL_DATA, NewsItem } from "@/data/liga1Data";
-import { Radio, Newspaper, ArrowRight, MapPin, Volume2 } from "lucide-react";
+import { Volume2, MapPin, ArrowRight, Play, Camera, Film } from "lucide-react";
+
+interface MediaHighlight {
+  id: string;
+  title: string;
+  type: "video" | "photo";
+  duration?: string;
+  venue: string;
+  image: string;
+  tag: string;
+}
+
+const MEDIA_HIGHLIGHTS: MediaHighlight[] = [
+  {
+    id: "media-1",
+    title: "KOREOGRAFI 360 DERAJAT TRIBUN BONEK DI GELORA BUNG TOMO",
+    type: "photo",
+    venue: "Gelora Bung Tomo, Surabaya",
+    image: "/images/stadium_fans.jpg",
+    tag: "FAN CULTURE GALLERY",
+  },
+  {
+    id: "media-2",
+    title: "CUPLIKAN HIGHLIGHT: GOL SALTO DAVID DA SILVA MENIT 89'",
+    type: "video",
+    duration: "03:45",
+    venue: "Gelora Bandung Lautan Api, Bandung",
+    image: "/images/hero_stadium.jpg",
+    tag: "MATCH HIGHLIGHTS",
+  },
+  {
+    id: "media-3",
+    title: "SOROTAN SUPORTER: GEMURUH JAKMANIA MEMBAKAR SEMANGAT JIS",
+    type: "video",
+    duration: "04:12",
+    venue: "Jakarta International Stadium",
+    image: "/images/stadium_fans.jpg",
+    tag: "ULTRAS TRIBUNE",
+  },
+  {
+    id: "media-4",
+    title: "ATMOSFER DERBI ETAM: DETIK-DETIK PERAYAAN KEMENANGAN DI SEGIRI",
+    type: "photo",
+    venue: "Stadion Segiri, Samarinda",
+    image: "/images/hero_stadium.jpg",
+    tag: "POST-MATCH EMOTION",
+  },
+];
 
 export default function InfluenceShowcase() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -30,7 +78,7 @@ export default function InfluenceShowcase() {
         });
       }
 
-      // 2. Horizontal Scroll pinning for the editorial cards on desktop
+      // 2. Horizontal Scroll pinning for cards on desktop
       const cards = cardsContainerRef.current;
       if (cards && window.innerWidth >= 768) {
         const totalScrollWidth = cards.scrollWidth - cards.clientWidth;
@@ -41,7 +89,7 @@ export default function InfluenceShowcase() {
           scrollTrigger: {
             trigger: sectionRef.current,
             start: "top top",
-            end: () => `+=${totalScrollWidth + 300}`,
+            end: () => `+=${totalScrollWidth + 400}`,
             pin: true,
             scrub: 1,
             invalidateOnRefresh: true,
@@ -75,7 +123,7 @@ export default function InfluenceShowcase() {
         <div className="flex items-center gap-2 mb-2">
           <Volume2 className="w-4 h-4 text-[#D4FF00] animate-pulse" />
           <span className="text-xs font-mono tracking-widest text-[#D4FF00] uppercase">
-            ATMOSFER STADION & MEDIA // LIPUTAN KHUSUS
+            ATMOSFER STADION & MEDIA // LIPUTAN BERITA & GALERI
           </span>
         </div>
 
@@ -84,21 +132,22 @@ export default function InfluenceShowcase() {
             DI LUAR 90 MENIT
           </h2>
           <p className="max-w-md text-xs sm:text-sm text-[#8E8E9A] font-sans">
-            Gairah tak terbendung dari tribun stadion termegah Indonesia. Simak sorotan eksklusif kultur suporter, derbi panas, dan aksi heroik para penggawa.
+            Gairah tak terbendung dari tribun stadion termegah Indonesia. Simak berita taktik terkini, galeri visual koreografi, dan cuplikan video aksi heroik pemain.
           </p>
         </div>
       </div>
 
-      {/* Editorial Horizontal Scroller Track */}
+      {/* Horizontal Scroller Track: News + Photo/Video Highlights */}
       <div className="relative z-10 w-full overflow-hidden px-4 sm:px-8 my-auto">
         <div
           ref={cardsContainerRef}
           className="flex gap-6 md:gap-8 will-change-transform pb-6 md:pb-0"
         >
-          {NEWS_EDITORIAL_DATA.map((item: NewsItem, idx: number) => (
+          {/* 1. News Articles */}
+          {NEWS_EDITORIAL_DATA.map((item: NewsItem) => (
             <article
               key={item.id}
-              className="flex-shrink-0 w-[85vw] sm:w-[420px] lg:w-[480px] p-6 sm:p-8 rounded-3xl bg-[#131318]/95 border border-[#23232C] hover:border-[#D4FF00]/60 backdrop-blur-2xl transition-all duration-300 flex flex-col justify-between group relative overflow-hidden"
+              className="flex-shrink-0 w-[85vw] sm:w-[420px] lg:w-[460px] p-6 sm:p-8 rounded-3xl bg-[#131318]/95 border border-[#23232C] hover:border-[#D4FF00]/60 backdrop-blur-2xl transition-all duration-300 flex flex-col justify-between group relative overflow-hidden"
             >
               {/* Colored Accent Top Glow */}
               <div
@@ -140,13 +189,65 @@ export default function InfluenceShowcase() {
               </div>
             </article>
           ))}
+
+          {/* 2. Photo & Video Highlights Cards */}
+          {MEDIA_HIGHLIGHTS.map((media) => (
+            <div
+              key={media.id}
+              className="flex-shrink-0 w-[85vw] sm:w-[420px] lg:w-[460px] rounded-3xl bg-[#131318] border border-[#23232C] hover:border-[#D4FF00] transition-all duration-300 relative overflow-hidden flex flex-col justify-end p-6 sm:p-8 group min-h-[360px]"
+            >
+              {/* Background Thumbnail Image */}
+              <Image
+                src={media.image}
+                alt={media.title}
+                fill
+                className="object-cover object-center group-hover:scale-105 transition-transform duration-700 opacity-40 group-hover:opacity-50"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0C] via-[#0A0A0C]/70 to-transparent" />
+
+              {/* Center Play Button for Video */}
+              {media.type === "video" && (
+                <div className="absolute top-6 right-6 w-10 h-10 rounded-full bg-[#D4FF00] text-[#0A0A0C] flex items-center justify-center shadow-[0_0_20px_rgba(212,255,0,0.4)] group-hover:scale-110 transition-transform">
+                  <Play className="w-4 h-4 fill-[#0A0A0C] ml-0.5" />
+                </div>
+              )}
+
+              {/* Top Tag */}
+              <div className="relative z-10 flex items-center gap-2 mb-auto">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#0A0A0C]/80 border border-[#23232C] text-[10px] font-mono font-bold uppercase text-[#D4FF00] backdrop-blur-md">
+                  {media.type === "video" ? (
+                    <Film className="w-3 h-3" />
+                  ) : (
+                    <Camera className="w-3 h-3" />
+                  )}
+                  <span>{media.tag}</span>
+                </span>
+                {media.duration && (
+                  <span className="text-[10px] font-mono text-[#F4F4F6] bg-[#0A0A0C]/80 px-2 py-0.5 rounded border border-[#23232C]">
+                    {media.duration}
+                  </span>
+                )}
+              </div>
+
+              {/* Content */}
+              <div className="relative z-10 pt-8">
+                <h3 className="text-xl sm:text-2xl font-bold font-anton tracking-tight text-[#F4F4F6] uppercase leading-tight group-hover:text-[#D4FF00] transition-colors mb-2">
+                  {media.title}
+                </h3>
+                <div className="flex items-center gap-1.5 text-xs font-mono text-[#8E8E9A]">
+                  <MapPin className="w-3.5 h-3.5 text-[#D4FF00]" />
+                  <span>{media.venue}</span>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 
       {/* Bottom Hint */}
       <div className="relative z-10 px-4 sm:px-8 mx-auto max-w-7xl w-full flex items-center justify-between text-[11px] font-mono text-[#8E8E9A] mt-6">
-        <span>GESER HORIZONTAL ATAU SCROLL UNTUK EKSPLORASI LIPUTAN</span>
-        <span className="text-[#D4FF00] font-bold">4 LIPUTAN TERPILIH</span>
+        <span>SCROLL / GESER UNTUK MELIHAT BERITA & GALERI VIDEO</span>
+        <span className="text-[#D4FF00] font-bold">8 KONTEN MULTIMEDIA</span>
       </div>
     </section>
   );
