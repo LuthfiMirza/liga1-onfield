@@ -4,263 +4,264 @@ import { useEffect, useRef } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { GLOBAL_KPI_STATS } from "@/data/liga1Data";
-import { ArrowDown, Flame, Trophy, Users, ShieldAlert } from "lucide-react";
+import { ArrowDown } from "lucide-react";
 
 export default function HeroOnField() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const bgImageRef = useRef<HTMLDivElement>(null);
-  const headlineRef = useRef<HTMLHeadingElement>(null);
-  const cardsRef = useRef<HTMLDivElement>(null);
-  const counterClubsRef = useRef<HTMLSpanElement>(null);
-  const counterMatchdayRef = useRef<HTMLSpanElement>(null);
-  const counterSpectatorsRef = useRef<HTMLSpanElement>(null);
-  const counterGoalsRef = useRef<HTMLSpanElement>(null);
+  const pinPaneRef = useRef<HTMLDivElement>(null);
+  const bgVisualRef = useRef<HTMLDivElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const badgeRef = useRef<HTMLDivElement>(null);
+  const quotePullRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
 
     const ctx = gsap.context(() => {
-      // 1. Background Parallax on Scroll
-      gsap.to(bgImageRef.current, {
-        yPercent: 25,
+      // 1. Hero background zoom & fade as user scrolls through the 190vh track
+      gsap.to(bgVisualRef.current, {
+        scale: 1.15,
+        yPercent: 12,
         ease: "none",
         scrollTrigger: {
           trigger: containerRef.current,
           start: "top top",
-          end: "bottom top",
+          end: "bottom bottom",
           scrub: true,
         },
       });
 
-      // 2. Headline subtle parallax
-      gsap.to(headlineRef.current, {
+      // 2. Title slight drift & fade on scroll
+      gsap.to(titleRef.current, {
         yPercent: -20,
-        opacity: 0.2,
+        opacity: 0.35,
         ease: "none",
         scrollTrigger: {
           trigger: containerRef.current,
           start: "top top",
-          end: "bottom top",
+          end: "60% top",
           scrub: true,
         },
       });
 
-      // 3. Number Counter Animation on view
-      const counterTargets = [
-        { ref: counterClubsRef, endVal: GLOBAL_KPI_STATS.totalClubs, decimals: 0 },
-        { ref: counterMatchdayRef, endVal: GLOBAL_KPI_STATS.currentMatchday, decimals: 0, prefix: "0" },
-        { ref: counterSpectatorsRef, endVal: GLOBAL_KPI_STATS.currentSeasonAttendance, decimals: 0, isLocale: true },
-        { ref: counterGoalsRef, endVal: GLOBAL_KPI_STATS.totalGoalsScored, decimals: 0 },
-      ];
-
-      ScrollTrigger.create({
-        trigger: cardsRef.current,
-        start: "top 90%",
-        onEnter: () => {
-          counterTargets.forEach((target) => {
-            const el = target.ref.current;
-            if (!el) return;
-            const obj = { val: 0 };
-            gsap.to(obj, {
-              val: target.endVal,
-              duration: 2.2,
-              ease: "power2.out",
-              onUpdate: () => {
-                if (target.isLocale) {
-                  el.textContent = Math.floor(obj.val).toLocaleString("id-ID");
-                } else if (target.prefix && obj.val < 10) {
-                  el.textContent = `${target.prefix}${Math.floor(obj.val)}`;
-                } else {
-                  el.textContent = Math.floor(obj.val).toString();
-                }
-              },
-            });
-          });
+      // 3. Pull-up quote reveal animation as it slides up over hero
+      gsap.fromTo(
+        quotePullRef.current,
+        {
+          opacity: 0.7,
         },
-        once: true,
-      });
+        {
+          opacity: 1,
+          ease: "none",
+          scrollTrigger: {
+            trigger: quotePullRef.current,
+            start: "top 80%",
+            end: "top 30%",
+            scrub: true,
+          },
+        }
+      );
     }, containerRef);
 
     return () => ctx.revert();
   }, []);
 
   return (
-    <section
-      id="hero"
-      ref={containerRef}
-      className="relative min-h-screen flex flex-col justify-between pt-28 pb-12 px-4 sm:px-8 overflow-hidden bg-[#0A0A0C]"
-    >
-      {/* Background Parallax Visual */}
-      <div
-        ref={bgImageRef}
-        className="absolute inset-0 -top-20 h-[125%] w-full pointer-events-none select-none z-0"
+    <>
+      {/* 1. On-Hero 190vh Pinned Stage */}
+      <section
+        id="hero"
+        ref={containerRef}
+        data-section="on-hero"
+        className="relative w-full"
+        style={{ overflowX: "clip" }}
       >
-        <Image
-          src="/images/hero_stadium.jpg"
-          alt="Liga 1 Stadium On-Field Experience"
-          fill
-          priority
-          className="object-cover object-center opacity-45 scale-105"
-        />
-        {/* Dark Vignette and Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0C] via-[#0A0A0C]/60 to-transparent" />
-        <div className="absolute inset-0 bg-radial-at-c from-transparent via-[#0A0A0C]/50 to-[#0A0A0C]" />
-      </div>
-
-      {/* Top Banner Tag */}
-      <div className="relative z-10 mx-auto max-w-7xl w-full flex items-center justify-between">
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#131318]/90 border border-[#23232C] backdrop-blur-md">
-          <span className="w-2 h-2 rounded-full bg-[#D4FF00] animate-ping" />
-          <span className="text-[11px] font-mono tracking-widest uppercase text-[#F4F4F6]">
-            EDISI RESMI // BRI SUPER LEAGUE 2026/27
-          </span>
-        </div>
-        <div className="hidden md:flex items-center gap-4 text-xs font-mono text-[#8E8E9A]">
-          <span>GBLA • GBT • JIS • SEGIPI</span>
-          <span className="text-[#D4FF00]">● LIVE BROADCAST</span>
-        </div>
-      </div>
-
-      {/* Center Main Athletic Headline */}
-      <div className="relative z-10 mx-auto max-w-7xl w-full my-auto py-10 sm:py-16">
-        <div className="flex flex-col">
-          <p className="text-xs sm:text-sm font-mono tracking-[0.3em] uppercase text-[#D4FF00] mb-2">
-            DETAK NADI SEPAK BOLA NUSANTARA
-          </p>
-
-          <h1
-            ref={headlineRef}
-            className="text-6xl sm:text-8xl md:text-[10rem] lg:text-[13rem] font-bold uppercase tracking-tighter leading-[0.85] text-[#F4F4F6] font-anton select-none"
+        <div className="relative" style={{ height: "190vh" }}>
+          {/* Pinned Inner Pane */}
+          <div
+            ref={pinPaneRef}
+            data-tone="dark"
+            data-on-hero-pane="true"
+            className="sticky top-0 z-0 h-screen w-full overflow-hidden bg-[#0B0A0F]"
+            aria-label="On-Field Liga 1 Experience"
           >
-            ON-FIELD
-            <span className="block text-2xl sm:text-4xl md:text-6xl lg:text-7xl text-transparent bg-clip-text bg-gradient-to-r from-[#D4FF00] via-[#F4F4F6] to-[#0070BA] tracking-tight mt-1">
-              · BRI SUPER LEAGUE ·
-            </span>
-          </h1>
+            {/* Background Visual Container with Parallax Zoom */}
+            <div
+              ref={bgVisualRef}
+              className="absolute inset-[-4%] will-change-transform z-0 select-none pointer-events-none"
+            >
+              <Image
+                src="/images/hero_stadium.jpg"
+                alt="Liga 1 Stadium On-Field Stage"
+                fill
+                priority
+                className="object-cover object-center filter saturate-[1.3] contrast-[1.15] brightness-[1.1]"
+              />
 
-          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mt-6">
-            <div className="max-w-xl flex flex-col gap-4">
-              {/* Iconic Quote Box */}
-              <div className="p-4 sm:p-5 rounded-2xl bg-[#131318]/80 border border-[#23232C] backdrop-blur-md">
-                <div className="flex items-center gap-2 mb-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#D4FF00]" />
-                  <span className="text-[10px] font-mono uppercase tracking-widest text-[#D4FF00]">
-                    KUTIPAN SEMANGAT KOMPETISI
+              {/* CRT Scanline Layer: Horizontal repeating bands */}
+              <div
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                  backgroundImage:
+                    "repeating-linear-gradient(0deg, rgba(0, 0, 0, 0) 0px, rgba(0, 0, 0, 0) 3px, rgba(0, 0, 0, 0.55) 3px, rgba(0, 0, 0, 0.55) 5px)",
+                }}
+              />
+
+              {/* CRT RGB Sub-pixel Overlay */}
+              <div
+                className="absolute inset-0 pointer-events-none hidden md:block"
+                style={{
+                  backgroundImage:
+                    "repeating-linear-gradient(90deg, rgba(255, 40, 70, 0.7) 0px, rgba(255, 40, 70, 0.7) 2px, rgba(40, 255, 120, 0.7) 2px, rgba(40, 255, 120, 0.7) 4px, rgba(60, 90, 255, 0.7) 4px, rgba(60, 90, 255, 0.7) 6px)",
+                  mixBlendMode: "overlay",
+                  opacity: 0.25,
+                }}
+              />
+
+              {/* Vignette Gradients ala jjettas */}
+              <div
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                  background:
+                    "radial-gradient(ellipse at center, rgba(0, 0, 0, 0) 50%, rgba(11, 10, 15, 0.75) 100%)",
+                }}
+              />
+              <div
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                  background:
+                    "radial-gradient(45vw 35% at 0% 0%, rgba(11, 10, 15, 0.8), transparent 75%), radial-gradient(45vw 35% at 100% 0%, rgba(11, 10, 15, 0.8), transparent 75%), radial-gradient(60vw 55% at 0% 100%, rgba(11, 10, 15, 0.9), transparent 75%), radial-gradient(50vw 45% at 100% 100%, rgba(11, 10, 15, 0.9), transparent 75%)",
+                }}
+              />
+            </div>
+
+            {/* Pinned Chrome Overlay (Title, Badges) */}
+            <div
+              data-on-hero-chrome="true"
+              className="pointer-events-none absolute inset-x-0 top-0 z-10 h-screen flex flex-col justify-between px-6 py-8 md:px-14 md:py-12 select-none"
+            >
+              {/* Top Navigation Row Space */}
+              <div className="flex items-center justify-between w-full">
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#131318]/80 border border-[#23232C] backdrop-blur-md">
+                  <span className="w-2 h-2 rounded-full bg-[#D4FF00] animate-ping" />
+                  <span className="text-[10px] font-mono tracking-widest uppercase text-[#F6F3EF]">
+                    BRI SUPER LEAGUE 2026/27
                   </span>
                 </div>
-                <p className="text-sm sm:text-base text-[#F4F4F6] font-sans italic leading-relaxed">
-                  &ldquo;Sepak bola Indonesia bukan sekadar 90 menit di atas rumput hijau; ini adalah identitas kota, kehormatan lambang di dada, dan detak jantung jutaan suporter di tribun.&rdquo;
-                </p>
+                <div className="hidden md:flex items-center gap-4 text-[11px] font-mono text-[#8E8E9A]">
+                  <span>GBLA • GBT • JIS • SEGIPI</span>
+                  <span className="text-[#D4FF00]">● MATCHDAY LIVE</span>
+                </div>
               </div>
 
-              <p className="text-sm sm:text-base text-[#8E8E9A] leading-relaxed font-sans">
-                Eksplorasi visual dan data berkecepatan tinggi dari panggung sepak bola kasta tertinggi Indonesia. Pantau persaingan 18 klub, intensitas tribun stadion, dan catatan rekor legendaris musim ini.
-              </p>
-            </div>
+              {/* Bottom Area: Massive Stacking "ON-FIELD" Title (Left) + Matchday Badge (Right) */}
+              <div className="relative flex flex-col md:flex-row items-start md:items-end justify-between gap-6 pb-4">
+                {/* Massive Stacking Title ala jjettas: "On-" stacked with "Field" */}
+                <h1
+                  ref={titleRef}
+                  data-hero-title="true"
+                  aria-label="On-Field Liga 1"
+                  className="relative z-10 uppercase text-[#F6F3EF] font-anton tracking-tighter select-none"
+                  style={{
+                    fontSize: "clamp(64px, 14.5vw, 212px)",
+                    lineHeight: 0.75,
+                    letterSpacing: "-0.02em",
+                  }}
+                >
+                  <span className="block">On-</span>
+                  <span className="block text-[#D4FF00]">Field</span>
+                </h1>
 
-            <div className="flex items-center gap-4">
-              <a
-                href="#standings"
-                className="px-6 py-3.5 rounded-full bg-[#D4FF00] hover:bg-[#bce400] text-[#0A0A0C] font-mono font-bold text-xs uppercase tracking-wider transition-all duration-300 shadow-[0_0_25px_rgba(212,255,0,0.3)] hover:scale-105"
-              >
-                JELAJAHI KLASEMEN
-              </a>
-              <a
-                href="#record-books"
-                className="px-6 py-3.5 rounded-full bg-[#131318] hover:bg-[#1C1C24] border border-[#23232C] text-[#F4F4F6] font-mono font-medium text-xs uppercase tracking-wider transition-all duration-300"
-              >
-                RECORD BOOKS
-              </a>
+                {/* Right Badge: Official Liga 1 / BRI Matchday Mark */}
+                <div
+                  ref={badgeRef}
+                  data-hero-mark="true"
+                  className="relative z-10 flex flex-col md:items-end gap-2"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="flex flex-col text-left md:text-right">
+                      <span className="text-xs font-mono uppercase tracking-[0.2em] text-[#8E8E9A]">
+                        BRI SUPER LEAGUE
+                      </span>
+                      <span className="text-[11px] font-mono text-[#F6F3EF]">
+                        EDISI RESMI 2026/2027
+                      </span>
+                    </div>
+                    <div className="px-3 py-1.5 bg-[#D4FF00] text-[#0B0A0F] font-mono font-bold text-xs uppercase tracking-wider rounded-md shadow-[0_0_20px_rgba(212,255,0,0.35)]">
+                      PEKAN 07
+                    </div>
+                  </div>
+                  <p className="text-[10px] font-mono uppercase tracking-widest text-[#8E8E9A]">
+                    18 KOTA • 306 PERTANDINGAN
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Bottom KPI Stat Counter Cards */}
+      {/* 2. Pull-Up Quote Section ala jjettas (margin-top: -82vh) */}
       <div
-        ref={cardsRef}
-        className="relative z-10 mx-auto max-w-7xl w-full grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mt-6"
+        ref={quotePullRef}
+        data-quote-pull="true"
+        className="relative z-20 w-full overflow-hidden"
+        style={{ marginTop: "-82vh" }}
       >
-        {/* Card 1: Total Klub */}
-        <div className="p-4 sm:p-6 rounded-2xl bg-[#131318]/90 border border-[#23232C] hover:border-[#D4FF00]/50 backdrop-blur-xl transition-all duration-300 group">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-[10px] sm:text-xs font-mono uppercase tracking-widest text-[#8E8E9A]">
-              Klub Peserta
-            </span>
-            <Trophy className="w-4 h-4 text-[#8E8E9A] group-hover:text-[#D4FF00] transition-colors" />
-          </div>
-          <div className="text-4xl sm:text-6xl font-bold font-mono tracking-tight text-[#F4F4F6] tabular-nums">
-            <span ref={counterClubsRef}>0</span>
-          </div>
-          <p className="text-[10px] font-mono text-[#8E8E9A] mt-2 uppercase tracking-wide">
-            18 Kota Sabang - Merauke
-          </p>
-        </div>
-
-        {/* Card 2: Pekan Berjalan */}
-        <div className="p-4 sm:p-6 rounded-2xl bg-[#131318]/90 border border-[#23232C] hover:border-[#D4FF00]/50 backdrop-blur-xl transition-all duration-300 group">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-[10px] sm:text-xs font-mono uppercase tracking-widest text-[#8E8E9A]">
-              Pekan Berjalan
-            </span>
-            <Flame className="w-4 h-4 text-[#D4FF00]" />
-          </div>
-          <div className="text-4xl sm:text-6xl font-bold font-mono tracking-tight text-[#F4F4F6] tabular-nums">
-            <span>PEKAN </span>
-            <span ref={counterMatchdayRef} className="text-[#D4FF00]">
-              07
-            </span>
-          </div>
-          <p className="text-[10px] font-mono text-[#8E8E9A] mt-2 uppercase tracking-wide">
-            9 Laga Sengit Menanti
-          </p>
-        </div>
-
-        {/* Card 3: Total Penonton */}
-        <div className="p-4 sm:p-6 rounded-2xl bg-[#131318]/90 border border-[#23232C] hover:border-[#D4FF00]/50 backdrop-blur-xl transition-all duration-300 group">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-[10px] sm:text-xs font-mono uppercase tracking-widest text-[#8E8E9A]">
-              Total Penonton
-            </span>
-            <Users className="w-4 h-4 text-[#8E8E9A] group-hover:text-[#D4FF00] transition-colors" />
-          </div>
-          <div className="text-3xl sm:text-5xl lg:text-5xl font-bold font-mono tracking-tight text-[#F4F4F6] tabular-nums">
-            <span ref={counterSpectatorsRef}>0</span>
-          </div>
-          <p className="text-[10px] font-mono text-[#8E8E9A] mt-2 uppercase tracking-wide">
-            Rata-rata 8.007 / Pertandingan
-          </p>
-        </div>
-
-        {/* Card 4: Total Gol */}
-        <div className="p-4 sm:p-6 rounded-2xl bg-[#131318]/90 border border-[#23232C] hover:border-[#D4FF00]/50 backdrop-blur-xl transition-all duration-300 group">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-[10px] sm:text-xs font-mono uppercase tracking-widest text-[#8E8E9A]">
-              Gol Tercipta
-            </span>
-            <ShieldAlert className="w-4 h-4 text-[#8E8E9A] group-hover:text-[#D4FF00] transition-colors" />
-          </div>
-          <div className="text-4xl sm:text-6xl font-bold font-mono tracking-tight text-[#F4F4F6] tabular-nums">
-            <span ref={counterGoalsRef}>0</span>
-            <span className="text-sm font-sans text-[#8E8E9A] ml-2">GOL</span>
-          </div>
-          <p className="text-[10px] font-mono text-[#8E8E9A] mt-2 uppercase tracking-wide">
-            Rasio 2.63 Gol Tiap 90 Menit
-          </p>
-        </div>
-      </div>
-
-      {/* Down Indicator */}
-      <div className="relative z-10 flex justify-center mt-6">
-        <a
-          href="#timeline"
-          className="flex flex-col items-center gap-1 text-[10px] font-mono text-[#8E8E9A] hover:text-[#D4FF00] transition-colors"
+        <section
+          data-tone="dark"
+          className="relative flex min-h-[90vh] items-center justify-center px-6 py-24 md:py-36 bg-[#0B0A0F]/95 border-t border-[#23232C]/60 backdrop-blur-2xl"
+          aria-label="Records are meant to be broken"
         >
-          <span>SCROLL KE BAWAH</span>
-          <ArrowDown className="w-3.5 h-3.5 animate-bounce text-[#D4FF00]" />
-        </a>
+          {/* Subtle Ambient Light Grid */}
+          <div
+            className="absolute inset-0 pointer-events-none opacity-20"
+            style={{
+              backgroundImage:
+                "radial-gradient(circle at 50% 50%, #D4FF00 0%, transparent 65%)",
+              filter: "blur(90px)",
+            }}
+          />
+
+          <div className="relative z-10 mx-auto max-w-6xl text-center flex flex-col items-center">
+            {/* Massive Dramatic Quote */}
+            <blockquote
+              className="display relative z-10 uppercase font-anton tracking-tight text-[#F6F3EF] select-none"
+              style={{
+                fontSize: "clamp(38px, 8.2vw, 142px)",
+                lineHeight: 0.94,
+              }}
+            >
+              <span>
+                RECORDS ARE{" "}
+                <span className="text-[#D4FF00]">MEANT TO BE</span> BROKEN.
+              </span>
+            </blockquote>
+
+            {/* Subtitle & Story Hook */}
+            <div className="mt-8 sm:mt-12 max-w-2xl text-center">
+              <p className="text-sm sm:text-base md:text-lg font-sans text-[#8E8E9A] leading-relaxed">
+                &ldquo;Sepak bola Indonesia bukan sekadar 90 menit di atas rumput hijau; ini adalah identitas kota, kehormatan lambang di dada, dan detak jantung jutaan suporter di tribun.&rdquo;
+              </p>
+              <div className="flex items-center justify-center gap-3 mt-6">
+                <span className="h-px w-10 bg-[#D4FF00]" />
+                <span className="text-xs font-mono uppercase tracking-[0.25em] text-[#D4FF00]">
+                  ON-FIELD ARCHIVE 2026/27
+                </span>
+                <span className="h-px w-10 bg-[#D4FF00]" />
+              </div>
+            </div>
+
+            {/* Scroll Indicator */}
+            <div className="mt-14 flex flex-col items-center gap-2 text-center">
+              <span className="text-[10px] font-mono tracking-[0.2em] uppercase text-[#8E8E9A]">
+                SCROLL UNTUK DATA STATISTIK
+              </span>
+              <ArrowDown className="w-4 h-4 text-[#D4FF00] animate-bounce" />
+            </div>
+          </div>
+        </section>
       </div>
-    </section>
+    </>
   );
 }
