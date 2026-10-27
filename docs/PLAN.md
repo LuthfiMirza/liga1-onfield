@@ -1,7 +1,7 @@
 # Implementation Plan: I.League On-Field Web
 
 - [ ] **Fase 1: Inisialisasi Proyek & Data Layer**
-  - Setup Next.js + Tailwind CSS + TypeScript.
+  - [x] Setup Next.js + Tailwind CSS + TypeScript.
   - Install dependencies: `gsap`, `lenis`, `framer-motion`, `lucide-react`.
   - Buat konfigurasi font (`Oswald`/`Anton` + `Space Grotesk` + `Inter`) dan skema warna di Tailwind.
   - Buat file `src/data/liga1Data.ts` berisi data lengkap dari `ileague.id` (18 klub, klasemen, jadwal pekan 7, top scorer/assist/saves/passes, rekor penonton 2021-2027, berita, dan partner).
